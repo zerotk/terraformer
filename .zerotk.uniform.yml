@@ -1,0 +1,14 @@
+name: zerotk.terraformer
+module: zerotk.terraformer
+namespace: zerotk
+path: zerotk/terraformer
+author: Alexandre Andrade
+author_email: kaniabi@gmail.com
+development_status: 4 - Beta
+short_description: Refactor tool for Python.
+long_description: Refactor tool for Python.
+keywords:
+  - refactor
+  - python
+install_requires:
+  - six
