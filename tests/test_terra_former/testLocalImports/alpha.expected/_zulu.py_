@@ -1,0 +1,4 @@
+class ZuluClass(object):
+
+    def GetOutput(self):
+        return "This is Zulu"

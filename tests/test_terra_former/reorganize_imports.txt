@@ -1,0 +1,627 @@
+---
+===
+try:
+    from archivist import Archivist
+except ImportError:
+    from ._archivist import Archivist
+---
+try:
+    from archivist import Archivist
+except ImportError:
+    from ._archivist import Archivist
+===
+from charlie import Charlie
+import echo as Echo
+from alpha import bravo as Bravo
+---
+from alpha import bravo as Bravo
+from charlie import Charlie
+import echo as Echo
+===
+from alpha import Alpha, Alpha, Alpha
+---
+from alpha import Alpha
+===
+import echo
+from alpha import bravo, charlie
+from foxtrot import (golf,
+    hotel,
+    italy
+)
+from foxtrot import alpha, \
+    bravo, \
+    charlie
+self.assertTrue(Call(1,"value"),True)
+---
+from alpha import bravo, charlie
+from foxtrot import alpha, bravo, charlie, golf, hotel, italy
+import echo
+self.assertTrue(Call(1,"value"),True)
+===
+import bravo
+import alpha
+
+# Separated by comment using import
+import x_ray
+import zulu
+import yankee
+
+# Separated by comment using from-import
+from delta import DEL
+from charlie import CHA
+---
+import alpha
+import bravo
+
+# Separated by comment using import
+import x_ray
+import yankee
+import zulu
+
+# Separated by comment using from-import
+from charlie import CHA
+from delta import DEL
+===
+'''
+    Doc
+'''
+
+import alpha
+---
+'''
+    Doc
+'''
+
+import alpha
+===
+import alpha
+from bravo import b_symbol
+
+def Method1():
+    import charlie
+
+def Method2():
+    from echo import e_symbol
+
+def Method3():
+    '''
+    Docs
+    '''
+    from foxtrot import f_symbol
+
+    x = 1
+    # Comment
+    from foxtrot import ff_symbol
+
+def Method4():
+    '''
+    Docs
+    '''
+    import after_method_doc
+
+    if a == 1:
+        x = 1
+    import after_if
+
+    for i in range(1,2):
+        x += 1
+    import after_for
+---
+from bravo import b_symbol
+import alpha
+
+def Method1():
+    import charlie
+
+def Method2():
+    from echo import e_symbol
+
+def Method3():
+    '''
+    Docs
+    '''
+    from foxtrot import f_symbol
+
+    x = 1
+    # Comment
+    from foxtrot import ff_symbol
+
+def Method4():
+    '''
+    Docs
+    '''
+    import after_method_doc
+
+    if a == 1:
+        x = 1
+    import after_if
+
+    for i in range(1,2):
+        x += 1
+    import after_for
+===
+import echo
+from alpha import bravo, charlie
+from foxtrot import (golf,
+    hotel,
+    italy
+)
+from foxtrot import alpha, \
+    bravo, \
+    charlie
+self.assertTrue(Call(1,"value"),True)
+---
+from alpha import bravo, charlie
+from foxtrot import alpha, bravo, charlie, golf, hotel, italy
+import echo
+self.assertTrue(Call(1,"value"),True)
+===
+import alpha, \
+    bravo
+---
+import alpha
+import bravo
+===
+from alpha.bravo import charlie
+---
+from alpha.bravo import charlie
+===
+import alpha, \
+    bravo
+import coilib50
+import coilib60
+import coilib70
+
+def Main():
+    pass
+---
+import alpha
+import bravo
+import coilib50
+import coilib60
+import coilib70
+
+def Main():
+    pass
+===
+from coilib50.app import command
+from etk11.foundation.decorators import Override
+from etk11.foundation.platform_ import Platform
+from sharedscripts10.namespace.namespace_types import LIST, NamespaceTypeFactory, PATH
+from sharedscripts10.shared_script import SharedScript
+
+# Comment
+---
+from coilib50.app import command
+from etk11.foundation.decorators import Override
+from etk11.foundation.platform_ import Platform
+from sharedscripts10.namespace.namespace_types import LIST, NamespaceTypeFactory, PATH
+from sharedscripts10.shared_script import SharedScript
+
+# Comment
+===
+from sharedscripts10.cache_service.cache_service import zulu
+from sharedscripts10.res_loader import alpha, bravo, charlie
+
+def Main():
+    pass
+---
+from sharedscripts10.cache_service.cache_service import zulu
+from sharedscripts10.res_loader import alpha, bravo, charlie
+
+def Main():
+    pass
+===
+import alpha
+---
+import alpha
+===
+x = 1
+---
+x = 1
+===
+"""
+Comment
+"""
+from ftputil import FTPHost
+
+#===================================================================================================
+# PermanentError
+#===================================================================================================
+try: # import for dist <= 1104
+    from ftputil import PermanentError
+except: # import for dist >= 12.0
+    from ftputil.ftp_error import PermanentError
+---
+"""
+Comment
+"""
+from ftputil import FTPHost
+
+#===================================================================================================
+# PermanentError
+#===================================================================================================
+try: # import for dist <= 1104
+    from ftputil import PermanentError
+except: # import for dist >= 12.0
+    from ftputil.ftp_error import PermanentError
+===
+from coilib50.basic._import_module import ImportModule
+---
+from coilib50.basic._import_module import ImportModule
+===
+import coilib50
+
+try:
+    coilib50.LoadCppModule('_coilib50') # Load with correct dlopen flags
+except ImportError:
+    pass
+else:
+    from _coilib50 import (
+        #MapIterator,
+        vector_ulonglong,
+        vector_ushort,
+    )
+---
+import coilib50
+
+try:
+    coilib50.LoadCppModule('_coilib50') # Load with correct dlopen flags
+except ImportError:
+    pass
+else:
+    from _coilib50 import vector_ulonglong, vector_ushort
+===
+from __future__ import with_statement
+from StringIO import StringIO
+---
+from __future__ import with_statement
+from StringIO import StringIO
+===
+from alpha import bravo, charlie, delta, echo, foxtrot, golf, hotel, india
+from alpha import juliet, kilo, lima, november, papa, romeo, tango, victor, xray, zulu
+from alpha import one, two, three, four, five, six, seven, eight, nine, ten
+
+---
+from alpha import (bravo, charlie, delta, echo, eight, five, four, foxtrot, golf, hotel, india,
+    juliet, kilo, lima, nine, november, one, papa, romeo, seven, six, tango, ten, three, two,
+    victor, xray, zulu)
+
+===
+from alpha import bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet, kilo, lima, xxxx
+---
+from alpha import bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet, kilo, lima, xxxx
+===
+from alpha import bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet, kilo, lima, xxx, zulu
+---
+from alpha import (bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet, kilo, lima,
+    xxx, zulu)
+===
+from alpha import bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet, kilo, lima, xxxxx
+---
+from alpha import (bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet, kilo, lima,
+    xxxxx)
+===
+if True:
+    if False:
+        from alpha import bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet, kilo, q, yyyy
+---
+if True:
+    if False:
+        from alpha import (bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet, kilo,
+            q, yyyy)
+===
+if True:
+    if False:
+        from alpha import bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet, kilo
+---
+if True:
+    if False:
+        from alpha import bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet, kilo
+===
+# Header
+
+def Main():
+    import alpha
+    import bravo
+
+    return 0
+---
+# Header
+
+def Main():
+    import alpha
+    import bravo
+
+    return 0
+===
+from alpha.bravo.charlie.echo.foxtrot.golf.hotel.india.juliet.kilo.lima import ANameThatWontFitInOneHundred
+---
+from alpha.bravo.charlie.echo.foxtrot.golf.hotel.india.juliet.kilo.lima import (
+    ANameThatWontFitInOneHundred)
+===
+def Alpha():
+    def Bravo():
+        def Charlie():
+            from alpha.bravo.charlie.echo.foxtrot.golf.hotel.india.juliet import (
+                ANameThatWontFitInOneHundred)
+---
+def Alpha():
+    def Bravo():
+        def Charlie():
+            from alpha.bravo.charlie.echo.foxtrot.golf.hotel.india.juliet import (
+                ANameThatWontFitInOneHundred)
+===
+from .alpha import bravo
+---
+from .alpha import bravo
+===
+from alpha import bravo as Br
+---
+from alpha import bravo as Br
+===
+from alpha import alpha, bravo, charlie, echo, foxtrot, golf, hotel, india, juliet, kilo, lima as Lyme
+---
+from alpha import (alpha, bravo, charlie, echo, foxtrot, golf, hotel, india, juliet, kilo, lima as
+    Lyme)
+===
+import bravo as Br
+---
+import bravo as Br
+===
+from sharedscripts10.namespace.namespace_types import ENVIRON, NamespaceTypeFactory, PATH, PATHLIST, STRING
+---
+from sharedscripts10.namespace.namespace_types import (ENVIRON, NamespaceTypeFactory, PATH,
+    PATHLIST, STRING)
+===
+from bravo import BrBravo  # @UnusedImport
+import alpha  # This is Alpha
+from bravo import BrDelta, BrCharlie  # The last ones
+from charlie import (ChThisIsAlphaFromCharliePackage, ChThisIsBravoFromCharliePackage,
+    ChThisIsCharlieFromCharliePackage, ChThisIsDeltaFromCharlie, ChThisIsLongSoCommentWontFit)  # Comment
+from bravo import BrAlpha
+---
+from bravo import BrAlpha
+from bravo import BrBravo  # @UnusedImport
+from bravo import BrCharlie, BrDelta  # The last ones
+from charlie import (ChThisIsAlphaFromCharliePackage, ChThisIsBravoFromCharliePackage,
+    ChThisIsCharlieFromCharliePackage, ChThisIsDeltaFromCharlie, ChThisIsLongSoCommentWontFit)  # Comment
+import alpha  # This is Alpha
+===
+frase = "A��o � A��o"
+---
+frase = "A��o � A��o"
+===
+from alpha.bravo.charlie.delta.echo.foxtrot.golf.hotel.india.juliet.kilo.lima.mike.november.oscar.papa import zulu
+---
+from alpha.bravo.charlie.delta.echo.foxtrot.golf.hotel.india.juliet.kilo.lima.mike.november.oscar.papa import (
+    zulu)
+===
+import alpha
+import zulu
+import charlie
+import bravo  # @terraforming:last-import
+---
+import alpha
+import charlie
+import zulu
+import bravo  # @terraforming:last-import
+===
+from plugins10.plugins.tree import (ITreeContentProvider11, ITreeContentProvider12, ITreeContentProvider13, ITreeContentProvider14, ITreeContentProvider15, ITreeContentProvider16, ITreeContentProvider17, ITreeContentProvider18, ITreeContentProvider19, ITreeContentProvider20, ITreeContentProvider70)
+---
+from plugins10.plugins.tree import (ITreeContentProvider11, ITreeContentProvider12,
+    ITreeContentProvider13, ITreeContentProvider14, ITreeContentProvider15, ITreeContentProvider16,
+    ITreeContentProvider17, ITreeContentProvider18, ITreeContentProvider19, ITreeContentProvider20,
+    ITreeContentProvider70)
+===
+from plugins10.plugins.tree import (ITreeContentProvider11, ITreeContentProvider12,
+    ITreeContentProvider13, ITreeContentProvider14, ITreeContentProvider15, ITreeContentProvider16,
+    ITreeContentProvider17, ITreeContentProvider18, ITreeContentProvider19, ITreeContentProvider20,
+    ITreeContentProvider70)
+---
+from plugins10.plugins.tree import (ITreeContentProvider11, ITreeContentProvider12,
+    ITreeContentProvider13, ITreeContentProvider14, ITreeContentProvider15, ITreeContentProvider16,
+    ITreeContentProvider17, ITreeContentProvider18, ITreeContentProvider19, ITreeContentProvider20,
+    ITreeContentProvider70)
+===
+from __future__ import print_function
+p = print
+---
+from __future__ import print_function
+p = print
+===
+import alpha;alpha.Execute()
+---
+import alpha;alpha.Execute()
+===
+if True:
+    if False:
+        import alpha;alpha.Execute()
+---
+if True:
+    if False:
+        import alpha;alpha.Execute()
+===
+if True:
+    if False:
+        # This condition
+        import alpha;alpha.Execute()
+---
+if True:
+    if False:
+        # This condition
+        import alpha;alpha.Execute()
+===
+from alpha import Alpha
+from __future__ import with_statement
+import charlie, delta
+from bravo import Bravo
+---
+from __future__ import with_statement
+from alpha import Alpha
+from bravo import Bravo
+import charlie
+import delta
+===
+def Method3(self):
+
+    if True:
+        import inside_if
+
+    import outside_if
+---
+def Method3(self):
+
+    if True:
+        import inside_if
+
+    import outside_if
+===
+if __name__ == '__main__':
+    import zulu
+    import bravo
+    import alpha
+---
+if __name__ == '__main__':
+    import alpha
+    import bravo
+    import zulu
+===
+from alpha import Alpha  # Comment
+raise Exception()
+---
+from alpha import Alpha  # Comment
+raise Exception()
+===
+from alpha import Alpha  # Comment
+alpha = Alpha()
+
+
+
+from bravo import Bravo  # Comment
+
+bravo = Bravo()
+---
+from alpha import Alpha  # Comment
+alpha = Alpha()
+
+
+
+from bravo import Bravo  # Comment
+
+bravo = Bravo()
+===
+if e.errno == errno.ENOENT:  # File does not exist
+    from _filesystem_exceptions import FileNotFoundError  # @Reimport
+    raise FileNotFoundError(filename)
+
+if 'proxy' in unicode(e.strerror):
+    from _filesystem_exceptions import CantOpenFileThroughProxyError
+    raise CantOpenFileThroughProxyError(filename)
+---
+if e.errno == errno.ENOENT:  # File does not exist
+    from _filesystem_exceptions import FileNotFoundError  # @Reimport
+    raise FileNotFoundError(filename)
+
+if 'proxy' in unicode(e.strerror):
+    from _filesystem_exceptions import CantOpenFileThroughProxyError
+    raise CantOpenFileThroughProxyError(filename)
+===
+import alpha
+if True:
+    import bravo
+import charlie
+---
+import alpha
+if True:
+    import bravo
+import charlie
+===
+from alpha import *
+---
+from alpha import *
+===
+from alpha import *
+from alpha import Alpha
+---
+from alpha import Alpha
+from alpha import *
+===
+from . import alpha
+from .. import bravo
+from ... import charlie
+---
+from . import alpha
+from .. import bravo
+from ... import charlie
+===
+from before_refactor_alpha import Alpha
+from before_refactor_bravo import Bravo
+---
+from after_refactor import Alpha, Bravo
+===
+from coilib50 import multithreading
+---
+import multithreading
+===
+from coilib50.basic import inter
+from coilib50.basic.inter import Interface
+from etk11.foundation.interface import Implements
+import alpha
+import bravo
+import coilib50.basic.inter
+---
+from etk11.foundation import interface
+from etk11.foundation.interface import Implements, Interface
+import alpha
+import bravo
+import etk11.foundation.interface
+===
+from coilib50.basic import inter
+from coilib50.basic.inter import Interface
+from etk11.foundation.interface import Implements
+import alpha
+import bravo
+import coilib50.basic.inter
+
+
+def Main():
+    import charlie
+    import echo
+
+def Other():
+    import yankee
+    import zulu
+---
+from etk11.foundation import interface
+from etk11.foundation.interface import Implements, Interface
+import alpha
+import bravo
+import etk11.foundation.interface
+
+
+def Main():
+    import charlie
+    import echo
+
+def Other():
+    import yankee
+    import zulu
+===
+def CreateRarFile():
+    import alpha
+
+    bravo.charlie = delta.echo
+    return True
+
+    foxtrot.golf = hotel.italy
+    return True
+---
+def CreateRarFile():
+    import alpha
+
+    bravo.charlie = delta.echo
+    return True
+
+    foxtrot.golf = hotel.italy
+    return True

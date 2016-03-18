@@ -1,0 +1,23 @@
+from alpha import Alpha
+from __future__ import with_statement
+import charlie, delta
+from bravo import Bravo
+
+
+
+class Class:
+    
+    def Method1(self):
+        import inside_method
+
+    def Method2(self):
+        '''
+        '''
+        import after_docs
+
+    def Method3(self):
+    
+        if True:
+            import inside_if
+            
+        import outside_if

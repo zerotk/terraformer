@@ -1,0 +1,33 @@
+---
+===
+from StringIO import StringIO
+
+s = StringIO()
+---
+from io import StringIO
+
+s = StringIO()
+===
+from cStringIO import StringIO
+
+s = StringIO()
+---
+from io import StringIO
+
+s = StringIO()
+===
+import StringIO
+
+s = StringIO.StringIO()
+---
+from io import StringIO
+
+s = StringIO()
+===
+import cStringIO
+
+s = cStringIO.StringIO()
+---
+from io import StringIO
+
+s = StringIO()

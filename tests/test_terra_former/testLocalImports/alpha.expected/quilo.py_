@@ -1,0 +1,20 @@
+#===================================================================================================
+# entry point
+#===================================================================================================
+if __name__ == '__main__':
+    import multiprocessing
+    multiprocessing.freeze_support()
+
+    from alpha10 import run_tests_generated
+    from coilib50.unittest_runner.runner import UnittestRunner
+    import sys
+
+    option_parser = UnittestRunner.ConfigureOptionParser()
+    options, args = option_parser.parse_args()
+
+    result = UnittestRunner.HandleCommandLine(options, args, run_tests_generated)
+    if result is None:
+        print 'Doing MAIN alpha stuff'
+        result = 0
+
+    sys.exit(result)
