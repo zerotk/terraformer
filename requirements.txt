@@ -2,8 +2,10 @@ six
 zerotk.easyfs
 zerotk.clikit
 zerotk.reraiseit
+pypugly
 
 # Development
-coverage
 pytest
+coverage
 mock
+
