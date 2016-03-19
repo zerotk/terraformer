@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
-from ben10.foundation.pushpop import PushPop
-from ben10.foundation.string import Dedent
-from terraformer import TerraFormer
+
+from zerotk.clikit.pushpop import PushPop
+from zerotk.terraformer import TerraFormer
+from pypugly.text import dedent
 import pytest
 
 
@@ -9,8 +10,8 @@ import pytest
 def testImportBlockZero(monkeypatch, embed_data):
 
     def TestIt(input, symbols, expected, import_blocks):
-        input = Dedent(input)
-        expected = Dedent(expected) + '\n'
+        input = dedent(input)
+        expected = dedent(expected) + '\n'
 
         terra_former = TerraFormer(input)
         for i_symbol in symbols:
@@ -221,7 +222,7 @@ def testImportBlockZero(monkeypatch, embed_data):
 def testTerraFormer(monkeypatch, embed_data):
 
     terra_former = TerraFormer(
-        source=Dedent(
+        source=dedent(
             '''
             import bravo
             import charlie
@@ -306,7 +307,7 @@ def testTerraFormer(monkeypatch, embed_data):
 
     changed = terra_former.ReorganizeImports()
 
-    assert terra_former.GenerateSource() == Dedent(
+    assert terra_former.GenerateSource() == dedent(
         '''
             from alpha import A1
             from bravo import B1, B2, B3
@@ -336,7 +337,7 @@ def testTerraFormer(monkeypatch, embed_data):
 
 
 def testReorganizeImports(embed_data, line_tester):
-    from ben10.filesystem import GetFileContents
+    from zerotk.easyfs import GetFileContents
 
     def Doit(lines):
         source = ''.join([i + '\n' for i in lines])
@@ -371,7 +372,7 @@ def testParse():
 
 
 def testLocalImports(monkeypatch, embed_data):
-    from terraformer._symbol import ImportBlock
+    from zerotk.terraformer._symbol import ImportBlock
 
     monkeypatch.setattr(ImportBlock, 'PYTHON_EXT', '.py_')
 
@@ -380,13 +381,13 @@ def testLocalImports(monkeypatch, embed_data):
         terra = TerraFormer(filename=full_filename)
         terra.ReorganizeImports()
         terra.Save()
-        embed_data.AssertEqualFiles(
+        embed_data.assert_equal_files(
             embed_data['testLocalImports/alpha/%s.py_' % filename],
             embed_data['testLocalImports/alpha.expected/%s.py_' % filename]
         )
 
     import sys
-    sys_path = [embed_data.GetDataFilename('testLocalImports')] + sys.path[:]
+    sys_path = [embed_data['testLocalImports']] + sys.path[:]
     with PushPop(sys, 'path', sys_path):
         TestIt('__init__')
         TestIt('_yankee')
@@ -401,8 +402,8 @@ def testLocalImports(monkeypatch, embed_data):
             TestIt('quilo')
 
 
-def testRename(embed_data, line_tester):
-    from ben10.filesystem import GetFileContents
+def test_rename(embed_data, line_tester):
+    from zerotk.easyfs import GetFileContents
 
     def Doit(lines):
         source = ''.join([i + '\n' for i in lines])
@@ -424,7 +425,7 @@ def testRename(embed_data, line_tester):
         return terra.GenerateSource().splitlines()
 
     line_tester.TestLines(
-        GetFileContents(embed_data['testRename.txt'], encoding='UTF-8'),
+        GetFileContents(embed_data['rename.txt'], encoding='UTF-8'),
         Doit,
     )
 
@@ -439,7 +440,7 @@ def testSymbolVisitor():
                 result.append('  - %s' % j)
         return '\n'.join(result)
 
-    source_code = Dedent(
+    source_code = dedent(
         '''
         from alpha import Alpha
         import coilib50
@@ -460,12 +461,12 @@ def testSymbolVisitor():
         '''
     )
 
-    from terraformer._visitor import ASTVisitor
+    from zerotk.terraformer._visitor import ASTVisitor
     code = TerraFormer._Parse(source_code)
     visitor = ASTVisitor()
     visitor.Visit(code)
 
-    assert visitor._module.AsString() == Dedent(
+    assert visitor._module.AsString() == dedent(
         '''
             module (1, 0) module
               IMPORT-BLOCK (1, 0) import-block #0
@@ -498,7 +499,7 @@ def testSymbolVisitor():
     symbol_visitor = SymbolVisitor()
     walk(code, symbol_visitor)
 
-    assert PrintScopes(symbol_visitor.scopes.values()) == Dedent(
+    assert PrintScopes(symbol_visitor.scopes.values()) == dedent(
         '''
             - <ClassScope: Zulu>
             - <FunctionScope: __init__>
@@ -529,7 +530,7 @@ class LineTester(object):
 
 
     def TestLines(self, doc, processor):
-        from ben10.foundation.reraise import Reraise
+        from zerotk.reraiseit import reraise
 
         lines = doc.split('\n')
         input_ = []
@@ -543,7 +544,7 @@ class LineTester(object):
                 try:
                     obtained = processor(input_)
                 except Exception as exception:
-                    Reraise(exception, 'While processing lines::\n  %s\n' % '\n  '.join(input_))
+                    reraise(exception, 'While processing lines::\n  %s\n' % '\n  '.join(input_))
                 if obtained != expected:
                     self._Fail(obtained, expected)
                 input_ = []

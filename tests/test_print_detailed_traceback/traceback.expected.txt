@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/path_to_file/file.py", line XX, in testPrintDetailedTraceback
+    PrintDetailedTraceback(max_levels=2, stream=stream, max_line_width=100)
+            Pad = <function Pad at 0x0>
+            data = [u'0', u'1', u'2', 3, u'4', u'5', u'6',... u'94', u'95', u'96', u'97', u'98', u'99']
+            embed_data = <zerotk.easyfs.fixtures._EmbedDataFixture object at 0x0>
+            stream = <_io.StringIO object at 0x0>
+  File "/path_to_file/file.py", line XX, in Pad
+    raise TypeError("object of type 'int' has no len()")
+            result = [u'0000', u'0001', u'0002']
+            seq = [u'0', u'1', u'2', 3, u'4', u'5', u'6',... u'94', u'95', u'96', u'97', u'98', u'99']
+            value = 3
+TypeError: object of type 'int' has no len()

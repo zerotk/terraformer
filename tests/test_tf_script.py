@@ -1,20 +1,19 @@
 # coding: UTF-8
 from __future__ import unicode_literals
-from ben10.filesystem import CreateFile, GetFileContents
-from ben10.foundation.string import Dedent
-from terraformer.tf_script import app
+from zerotk.easyfs import CreateFile, GetFileContents
+from pypugly.text import dedent
+from zerotk.terraformer.tf_script import app
 import pytest
 
 
-
 def testDocs():
-    '''
+    """
     Test "tf" API by printing the general documentation.
-    '''
+    """
 
     app.TestScript(
-        Dedent(
-            '''
+        dedent(
+            """
                 >terraformer
 
                 Usage:
@@ -29,20 +28,20 @@ def testDocs():
                     fix-encoding        Fix python module files encoding, converting all non-ascii encoded files to UTF-8.
                     fix-stringio        Fix StringIO usage.
 
-            '''
+            """
         )
     )
 
 
 def testSymbols(embed_data):
-    '''
+    """
     Test tf symbols command.
     This command is a WIP and should grow as "tf" interprets more and more symbols from python
     modules.
-    '''
+    """
 
     filename = embed_data['testSymbols.py_']
-    original = '''
+    original = """
         import alpha
 
         class Alpha(object):
@@ -53,29 +52,29 @@ def testSymbols(embed_data):
         def Function():
             pass
 
-    '''
-    assert CreateFile(filename, Dedent(original), encoding='UTF-8')
+    """
+    assert CreateFile(filename, dedent(original), encoding='UTF-8')
 
     app.TestScript(
-        Dedent(
-            '''
+        dedent(
+            """
                 >terraformer symbols %(filename)s
                 1: IMPORT alpha
-            ''' % locals()
+            """ % locals()
         )
     )
 
 
 def testFixFormat(embed_data):
-    '''
+    """
     General test for tbe "tf fix-format" command.
-    This is a smoke test for the command interaction since most of the real testing is done on
-    pytest_terra_former.py
-    '''
+    This is a smoke test for the command interaction since most of the real
+    testing is done on pytest_terra_former.py
+    """
 
     filename = embed_data['testFixFormat.py']
-    data_dir = embed_data.GetDataDirectory()
-    original = '''
+    data_dir = embed_data.get_data_dir()
+    original = """
         import zulu
         from bravo import Bravo
         import alpha
@@ -88,20 +87,20 @@ def testFixFormat(embed_data):
         def Function():
             pass
 
-    '''
-    assert CreateFile(filename, Dedent(original), encoding='UTF-8')
+    """
+    assert CreateFile(filename, dedent(original), encoding='UTF-8')
 
     app.TestScript(
-        Dedent(
-            '''
+        dedent(
+            """
                 >terraformer fix-format --single-job %(data_dir)s
                 - %(filename)s: FIXED
 
-            ''' % locals()
+            """ % locals()
         )
     )
-    assert GetFileContents(filename, encoding='UTF-8') == Dedent(
-        '''
+    assert GetFileContents(filename, encoding='UTF-8') == dedent(
+        """
             from bravo import Bravo
             import alpha
             import zulu
@@ -114,18 +113,18 @@ def testFixFormat(embed_data):
             def Function():
                 pass
 
-        '''
+        """
     )
 
 
 def testAddImportSymbol(embed_data):
-    '''
+    """
     General test for the "tf add-import-symbol" command.
-    '''
+    """
     filename = embed_data['testFixFormat.py']
-    data_dir = embed_data.GetDataDirectory()
+    data_dir = embed_data.get_data_dir()
 
-    original = '''
+    original = """
         import zulu
         from bravo import Bravo
         import alpha
@@ -138,20 +137,20 @@ def testAddImportSymbol(embed_data):
         def Function():
             pass
 
-    '''
-    assert CreateFile(filename, Dedent(original), encoding='UTF-8')
+    """
+    assert CreateFile(filename, dedent(original), encoding='UTF-8')
 
     app.TestScript(
-        Dedent(
-            '''
+        dedent(
+            """
                 >terraformer add-import-symbol --single-job "__future__.unicode_literals" %(filename)s
                 - %(filename)s: FIXED
-            ''' % locals()
+            """ % locals()
         )
     )
 
-    assert GetFileContents(filename, encoding='UTF-8') == Dedent(
-        '''
+    assert GetFileContents(filename, encoding='UTF-8') == dedent(
+        """
             from __future__ import unicode_literals
             from bravo import Bravo
             import alpha
@@ -165,102 +164,102 @@ def testAddImportSymbol(embed_data):
             def Function():
                 pass
 
-        '''
+        """
     )
 
 
 def testFixEncoding(embed_data):
-    '''
+    """
     General test for tbe "tf fix-encoding" command.
-    '''
+    """
 
     def TestFixEncoding(original, expected, encoding, lineno=0):
         filename = embed_data['testFixEncoding.py_']
 
         assert CreateFile(
             filename,
-            Dedent(original),
+            dedent(original),
             encoding=encoding
         )
 
         app.TestScript(
-            Dedent(
-                '''
+            dedent(
+                """
                     >terraformer fix-encoding %(filename)s
                     - %(filename)s: %(encoding)s (line:%(lineno)s)
 
-                ''' % locals()
+                """ % locals()
             )
         )
 
         obtained = GetFileContents(filename, encoding='UTF-8')
-        assert obtained == Dedent(expected)
+        assert obtained == dedent(expected)
 
     TestFixEncoding(
-        '''
+        """
             from __future__ import with_statement
             # coding: latin1
             import sys
 
             action = 'ação'
-        ''',
-        '''
+        """,
+        """
             # coding: UTF-8
             from __future__ import with_statement
             import sys
 
             action = 'ação'
-        ''',
+        """,
         'latin1',
         lineno=1
     )
 
     TestFixEncoding(
-        '''
+        """
             # coding: cp1252
             import alpha
             import bravo
 
             action = 'ação'
-        ''',
-        '''
+        """,
+        """
             # coding: UTF-8
             import alpha
             import bravo
 
             action = 'ação'
-        ''',
+        """,
         'cp1252'
     )
 
     # Support "coding=".
     TestFixEncoding(
-        '''
+        """
             # coding=UTF-8
             import alpha
             import bravo
 
             action = 'ação'
-        ''',
-        '''
+        """,
+        """
             # coding: UTF-8
             import alpha
             import bravo
 
             action = 'ação'
-        ''',
+        """,
         'UTF-8'
     )
 
 
 def testFixIsFrozen(embed_data):
-    '''
+    """
     General test for tbe "tf is-frozen" command.
-    '''
+    """
 
     filename = embed_data['testFixIsFrozen.py']
-    data_dir = embed_data.GetDataDirectory()
-    original = '''
+    data_dir = embed_data.get_data_dir()
+    original = """
         import coilib50
         from coilib50.basic import property
 
@@ -268,20 +267,20 @@ def testFixIsFrozen(embed_data):
             print "Frozen"
             property.Create('')
 
-    '''
-    assert CreateFile(filename, Dedent(original), encoding='UTF-8')
+    """
+    assert CreateFile(filename, dedent(original), encoding='UTF-8')
 
     app.TestScript(
-        Dedent(
-            '''
+        dedent(
+            """
                 >terraformer fix-is-frozen %(filename)s
                 - %(filename)s
 
-            ''' % locals()
+            """ % locals()
         )
     )
-    assert GetFileContents(filename, encoding='UTF-8') == Dedent(
-        '''
+    assert GetFileContents(filename, encoding='UTF-8') == dedent(
+        """
         from ben10 import property_
         from ben10.foundation.is_frozen import IsFrozen
         import coilib50
@@ -291,5 +290,5 @@ def testFixIsFrozen(embed_data):
             print "Frozen"
             property_.Create('')
 
-        '''
+        """
     )
