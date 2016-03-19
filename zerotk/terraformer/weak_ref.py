@@ -175,6 +175,7 @@ class WeakMethodRef(object):
             return None
         if self._obj is not None:
             # we have an instance: return a bound method
+            import new
             return new.instancemethod(self._func, self._obj(), self._class)
         else:
             # we don't have an instance: return just the function

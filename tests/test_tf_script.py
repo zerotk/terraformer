@@ -1,9 +1,11 @@
 # coding: UTF-8
 from __future__ import unicode_literals
-from zerotk.easyfs import CreateFile, GetFileContents
-from pypugly.text import dedent
-from zerotk.terraformer.tf_script import app
+
 import pytest
+
+from pypugly.text import dedent
+from zerotk.easyfs import CreateFile, GetFileContents
+from zerotk.terraformer.tf_script import app
 
 
 def testDocs():

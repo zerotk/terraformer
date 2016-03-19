@@ -71,4 +71,3 @@ def testStringDictIOOrderAndSorted(embed_data):
     # Test sorted
     StringDictIO.Save(ordered_dict, filename, sort_items=True)
     assert GetFileContents(filename) == 'a = last\nz = first\n'
-

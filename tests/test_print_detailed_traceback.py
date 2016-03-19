@@ -10,7 +10,6 @@ import mock
 import pytest
 import six
 
-from pypugly.text import dedent
 from zerotk.easyfs import CreateFile
 from zerotk.terraformer.print_detailed_traceback import PrintDetailedTraceback
 
@@ -75,6 +74,7 @@ def testPrintDetailedTraceback(embed_data):
 
 
 # def testPrintDetailedTracebackNotAsciiPath(embed_data, unicode_samples, script_runner):
+#     from pypugly.text import dedent
 #     SCRIPT = dedent(
 #         '''
 #         # coding: UTF-8

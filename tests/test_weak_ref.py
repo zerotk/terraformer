@@ -1,10 +1,14 @@
 from __future__ import unicode_literals
-from zerotk.terraformer.weak_ref import (GetRealObj, GetWeakProxy, GetWeakRef,
-    IsSame, IsWeakProxy, IsWeakRef, WeakList, WeakMethodProxy, WeakMethodRef,
-    WeakSet)
-import pytest
+
 import sys
 import weakref
+
+import pytest
+import six
+
+from zerotk.terraformer.weak_ref import (
+    GetRealObj, GetWeakProxy, GetWeakRef, IsSame, IsWeakProxy, IsWeakRef,
+    WeakList, WeakMethodProxy, WeakMethodRef, WeakSet)
 
 
 class _Stub(object):
@@ -238,7 +242,7 @@ class Test():
         with pytest.raises(AssertionError) as excinfo:
             self.CustomAssertEqual(1, 2)
 
-        assert unicode(excinfo.value) == '1 != 2\nassert False'
+        assert six.text_type(excinfo.value) == '1 != 2\nassert False'
 
     def testRefcount(self):
         self.SetupTestAttributes()
@@ -266,7 +270,7 @@ class Test():
         rf = WeakMethodRef(self.c.f)
         pf = WeakMethodProxy(self.c.f)
         assert not rf.is_dead()
-        assert not pf.is_dead()
+        assert not pf.is_dea()
         assert rf()() == 1
         assert pf(2) == 3
         self.c = None
@@ -343,13 +347,13 @@ class Test():
         self.SetupTestAttributes()
 
         r = WeakMethodRef(self.c.f)
-        assert unicode(r)[:33] == '<WeakMethodRef to C.f for object '
+        assert six.text_type(r)[:33] == '<WeakMethodRef to C.f for object '
 
         def Foo():
             'Never called'
 
         r = WeakMethodRef(Foo)
-        assert unicode(r) == '<WeakMethodRef to Foo>'
+        assert six.text_type(r) == '<WeakMethodRef to Foo>'
 
     def testWeakList(self):
         weak_list = WeakList()

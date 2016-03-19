@@ -1,10 +1,10 @@
 from __future__ import unicode_literals
 
-from zerotk.clikit.pushpop import PushPop
-from zerotk.terraformer import TerraFormer
-from pypugly.text import dedent
 import pytest
 
+from pypugly.text import dedent
+from zerotk.clikit.pushpop import PushPop
+from zerotk.terraformer import TerraFormer
 
 
 def testImportBlockZero(monkeypatch, embed_data):
