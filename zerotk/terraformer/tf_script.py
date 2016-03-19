@@ -202,7 +202,7 @@ def FixIsFrozen(console_, *sources):
             top_doc = False
             for i, i_line in enumerate(lines):
                 if i == 0:
-                    for i_top_doc in (""""", '"""'):
+                    for i_top_doc in ("'''", '"""'):
                         if i_top_doc in i_line:
                             console_.Print('TOPDOC START: %d' % i, indent=1)
                             top_doc = i_top_doc

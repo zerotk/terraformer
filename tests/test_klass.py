@@ -1,7 +1,9 @@
 from __future__ import unicode_literals
-from zerotk.terraformer.klass import (AllBasesNames, CheckOverridden,
-                                      GetClassHierarchy, IsInstance, IsSubclass)
+
 import pytest
+
+from zerotk.terraformer.klass import (AllBasesNames, CheckOverridden,
+    GetClassHierarchy, IsInstance, IsSubclass)
 
 
 class _A(object):
@@ -141,12 +143,12 @@ class Test:
 #         print 'isinstance', timer.timeit()
 
     def testIsInstanceWithDateTime(self):
-        '''
+        """
         Make sure IsInstance works with DateTime objects.
 
         Previously passing a DateTime to IsInstance would yield an
         AttributeError for __class__. Changed IsInstance to use type() instead.
-        '''
+        """
         mx_dt = pytest.importorskip('mx.DateTime')
         assert IsInstance(mx_dt.DateTime(2012), 'DateTime')
         assert not IsInstance(mx_dt.DateTime(2012), 'Scalar')
