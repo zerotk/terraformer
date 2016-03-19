@@ -33,7 +33,6 @@ class Test():
         assert a == b
         a.Method()
 
-
     def testIsSame(self):
         s1 = _Stub()
         s2 = _Stub()
@@ -53,7 +52,6 @@ class Test():
         assert not IsSame(s1, r2)
         assert not IsSame(s1, p2)
 
-
         assert IsSame(p2, r2)
         assert IsSame(r1, p1)
         assert not IsSame(r1, p2)
@@ -61,11 +59,9 @@ class Test():
         with pytest.raises(ReferenceError):
             IsSame(p1, p2)
 
-
     def testGetWeakRef(self):
         b = GetWeakRef(None)
         assert b() is None
-
 
     def testGeneral(self):
         b = _Stub()
@@ -91,8 +87,6 @@ class Test():
         assert r == r2
         assert hash(r) == hash(r2)
 
-
-
     def testGetRealObj(self):
         b = _Stub()
         r = GetWeakRef(b)
@@ -101,13 +95,11 @@ class Test():
         r = GetWeakRef(None)
         assert GetRealObj(r) is None
 
-
     def testGetWeakProxyFromWeakRef(self):
         b = _Stub()
         r = GetWeakRef(b)
         proxy = GetWeakProxy(r)
         assert IsWeakProxy(proxy)
-
 
     def testWeakSet(self):
         weak_set = WeakSet()
@@ -147,7 +139,6 @@ class Test():
 #         weak_set.add(function)
 #         self.CustomAssertEqual(len(weak_set), 1)
 
-
     def testRemove(self):
         weak_set = WeakSet()
 
@@ -163,7 +154,6 @@ class Test():
         # Trying discard, no exception raised
         weak_set.discard(s1)
         self.CustomAssertEqual(len(weak_set), 0)
-
 
     def testWeakSet2(self):
         weak_set = WeakSet()
@@ -181,7 +171,6 @@ class Test():
         self.CustomAssertEqual(len(weak_set), 1)
         weak_set.remove(s2.Method)
         self.CustomAssertEqual(len(weak_set), 0)
-
 
     def testWithError(self):
         weak_set = WeakSet()
@@ -204,7 +193,6 @@ class Test():
         del s2
         self.CustomAssertEqual(len(weak_set), 0)
 
-
     def testFunction(self):
         weak_set = WeakSet()
 
@@ -220,7 +208,6 @@ class Test():
         weak_set.remove(function)
         assert len(weak_set) == 0
 
-
     def CustomAssertEqual(self, a, b):
         '''
         Avoiding using "assert a == b" because it adds another reference to the ref-count.
@@ -230,14 +217,15 @@ class Test():
         else:
             assert False, "%s != %s" % (a, b)
 
-
     def SetupTestAttributes(self):
 
         class C(object):
+
             def f(self, y=0):
                 return self.x + y
 
         class D(object):
+
             def f(self):
                 'Never called'
 
@@ -246,20 +234,20 @@ class Test():
         self.c.x = 1
         self.d = D()
 
-
     def testCustomAssertEqual(self):
         with pytest.raises(AssertionError) as excinfo:
             self.CustomAssertEqual(1, 2)
 
         assert unicode(excinfo.value) == '1 != 2\nassert False'
 
-
     def testRefcount(self):
         self.SetupTestAttributes()
 
-        self.CustomAssertEqual(sys.getrefcount(self.c), 2)  # 2: one in self, and one as argument to getrefcount()
+        # 2: one in self, and one as argument to getrefcount()
+        self.CustomAssertEqual(sys.getrefcount(self.c), 2)
         cf = self.c.f
-        self.CustomAssertEqual(sys.getrefcount(self.c), 3)  # 3: as above, plus cf
+        self.CustomAssertEqual(sys.getrefcount(
+            self.c), 3)  # 3: as above, plus cf
         rf = WeakMethodRef(self.c.f)
         pf = WeakMethodProxy(self.c.f)
         self.CustomAssertEqual(sys.getrefcount(self.c), 3)
@@ -271,7 +259,6 @@ class Test():
         del rf2
         del pf
         self.CustomAssertEqual(sys.getrefcount(self.c), 2)
-
 
     def testDies(self):
         self.SetupTestAttributes()
@@ -289,7 +276,6 @@ class Test():
         with pytest.raises(ReferenceError):
             pf()
 
-
     def testWorksWithFunctions(self):
         self.SetupTestAttributes()
 
@@ -303,7 +289,6 @@ class Test():
         assert not rf.is_dead()
         assert not pf.is_dead()
 
-
     def testWorksWithUnboundMethods(self):
         self.SetupTestAttributes()
 
@@ -315,7 +300,6 @@ class Test():
         assert pf(self.c) == 1
         assert not rf.is_dead()
         assert not pf.is_dead()
-
 
     def testEq(self):
         self.SetupTestAttributes()
@@ -330,7 +314,6 @@ class Test():
         assert rf2.is_dead()
         assert rf1 == rf2
 
-
     def testProxyEq(self):
         self.SetupTestAttributes()
 
@@ -344,7 +327,6 @@ class Test():
         assert pf1.is_dead()
         assert pf2.is_dead()
 
-
     def testHash(self):
         self.SetupTestAttributes()
 
@@ -357,7 +339,6 @@ class Test():
         assert r() is None
         assert hash(r) == h
 
-
     def testRepr(self):
         self.SetupTestAttributes()
 
@@ -369,7 +350,6 @@ class Test():
 
         r = WeakMethodRef(Foo)
         assert unicode(r) == '<WeakMethodRef to Foo>'
-
 
     def testWeakList(self):
         weak_list = WeakList()
@@ -425,7 +405,6 @@ class Test():
         s1 = _Stub()
         weak_list.extend([s0, s1])
         assert len(weak_list) == 2
-
 
     def testSetItem(self):
         weak_list = WeakList()
