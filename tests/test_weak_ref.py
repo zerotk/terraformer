@@ -270,7 +270,7 @@ class Test():
         rf = WeakMethodRef(self.c.f)
         pf = WeakMethodProxy(self.c.f)
         assert not rf.is_dead()
-        assert not pf.is_dea()
+        assert not pf.is_dead()
         assert rf()() == 1
         assert pf(2) == 3
         self.c = None
