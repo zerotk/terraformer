@@ -1,15 +1,18 @@
 # coding: UTF-8
 from __future__ import unicode_literals
 
+import itertools
+import re
+import sys
+from io import BytesIO, StringIO
+
+import mock
+import pytest
+import six
+
 from pypugly.text import dedent
 from zerotk.easyfs import CreateFile
 from zerotk.terraformer.print_detailed_traceback import PrintDetailedTraceback
-from io import BytesIO, StringIO
-import itertools
-import mock
-import pytest
-import re
-import sys
 
 
 def testPrintDetailedTraceback(embed_data):
@@ -25,7 +28,7 @@ def testPrintDetailedTraceback(embed_data):
                 raise TypeError("object of type 'int' has no len()")
         return result
 
-    data = map(unicode, xrange(100))
+    data = list(map(six.text_type, six.moves.range(100)))
     data[3] = 3
 
     stream = StringIO()

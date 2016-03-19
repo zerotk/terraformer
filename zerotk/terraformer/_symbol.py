@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 import os
 
+import six
+
 from .decorators import Comparable, Override
 
 
@@ -16,11 +18,10 @@ class Symbol(object):
     def __init__(self, parent, name, code, code_replace=None):
         from lib2to3.pytree import Leaf, Node
         from ._lib2to3 import GetNodePosition
-        from types import NoneType
 
         self.name = name
 
-        assert isinstance(code, (Node, Leaf, NoneType))
+        assert isinstance(code, (Node, Leaf, None.__class__))
         self.code = code
         self.code_replace = code_replace
         self.lineno = 0
@@ -210,8 +211,8 @@ class ImportSymbol(Symbol):
         :param KIND_IMPORT_XXX kind:
             The kind of import.
         """
-        assert isinstance(name, (str, unicode))
-        assert isinstance(comment, (str, unicode))
+        assert isinstance(name, six.string_types)
+        assert isinstance(comment, six.string_types)
         assert kind in (self.KIND_IMPORT_NAME, self.KIND_IMPORT_FROM)
         Symbol.__init__(self, parent, name, None)
 
@@ -423,10 +424,16 @@ class ImportFromScope(Scope):
             # nodes_wrap: if true, we need to wrap the import statement
             nodes_wrap = False
             line_len = 0
-            line_len += reduce(lambda x, y: x + y,
-                               map(len, map(str, children)), 0)
-            line_len += reduce(lambda x, y: x + y,
-                               map(len, map(str, name_leafs)), 0)
+            line_len += six.moves.reduce(
+                lambda x, y: x + y,
+                map(len, map(str, children)),
+                0
+            )
+            line_len += six.moves.reduce(
+                lambda x, y: x + y,
+                map(len, map(str, name_leafs)),
+                0
+            )
             if line_len > page_width:
                 # Add parenthesis around the "from" names
                 name_leafs[0].prefix = ''
@@ -468,7 +475,7 @@ class ImportFromScope(Scope):
             groups.setdefault(key, []).append(i_child)
 
         result = []
-        for (_has_star, i_comment), i_symbols in sorted(groups.iteritems()):
+        for (_has_star, i_comment), i_symbols in sorted(six.iteritems(groups)):
             node = _CreateCode(indent, self.name, i_symbols, i_comment)
             result.append(node)
 

@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import six
+
 from zerotk.easyfs import GetFileContents
 
 from .memoize import Memoize
@@ -66,7 +68,7 @@ class TerraFormer(object):
 
         :return unicode:
         """
-        return unicode(self.code)
+        return six.text_type(self.code)
 
     @classmethod
     @Memoize(maxsize=1000)

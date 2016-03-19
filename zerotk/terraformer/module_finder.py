@@ -225,7 +225,7 @@ def ImportModule(p_import_path):
                     )
                 )
         return result
-    except ImportError, e:
+    except ImportError as e:
         reraise(e, 'Error importing module %s' % p_import_path)
 
 

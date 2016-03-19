@@ -3,8 +3,11 @@ from __future__ import unicode_literals
 from functools import partial
 from io import StringIO
 
+import six
+
 from zerotk.clikit.app import App
-from zerotk.easyfs import EOL_STYLE_UNIX, FindFiles, IsDir, StandardizePath
+from zerotk.easyfs import EOL_STYLE_UNIX, FindFiles, IsDir, StandardizePath, \
+    GetFileLines
 
 app = App('terraformer')
 
@@ -246,14 +249,21 @@ def FixEncoding(console_, *sources):
     def GetPythonEncoding(filename):
         import re
 
-        with open(filename, mode='rb') as iss:
-            for i, i_line in enumerate(iss.readlines()):
-                if i > 10:
-                    # Only searches the first lines for encoding information.
-                    break
-                r = re.match('#.*coding[:=] *([\w\-\d]*)', i_line)
-                if r is not None:
-                    return i, r.group(1)
+        # with open(filename, mode='rb') as iss:
+        #     for i, i_line in enumerate(iss.readlines()):
+        #         if i > 10:
+        #             # Only searches the first lines for encoding information.
+        #             break
+        #         r = re.match('#.*coding[:=] *([\w\-\d]*)', i_line)
+        #         if r is not None:
+        #             return i, r.group(1)
+        for i, i_line in enumerate(GetFileLines(filename)):
+            if i > 10:
+                # Only searches the first lines for encoding information.
+                break
+            r = re.match('#.*coding[:=] *([\w\-\d]*)', i_line)
+            if r is not None:
+                return i, r.group(1)
         return 0, None
 
     for i_filename in _GetFilenames(sources, [PYTHON_EXT]):
@@ -370,7 +380,7 @@ def _reorganize_imports(filename, refactor={}):
         terra.ReorganizeImports(refactor=refactor)
         changed = terra.Save()
         return changed
-    except Exception, e:
+    except Exception as e:
         reraise(e, 'On TerraForming.ReorganizeImports with filename: %s' % filename)
 
 
@@ -484,8 +494,7 @@ def _Map(console_, func, func_params, _sorted, single_job):
     """
 
     if single_job:
-        import itertools
-        imap = itertools.imap
+        imap = six.moves.map
     else:
         import concurrent.futures
         executor = concurrent.futures.ProcessPoolExecutor()

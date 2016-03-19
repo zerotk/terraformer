@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
 
-
-
 #===================================================================================================
 # ASTError
 #===================================================================================================
+import six
+
+
 class ASTError(Exception):
     """
     Exception associated with any error handling the AST tree.
@@ -633,7 +634,7 @@ def _DeriveClassName(node):
     :param lib2to3.Node node:
     :return unicode:
     """
-    return unicode(node).strip()
+    return six.text_type(node).strip()
 
 
 def _DeriveClassNames(node):

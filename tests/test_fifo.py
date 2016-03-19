@@ -14,11 +14,11 @@ class Test:
         fifo[2] = 2
         fifo[3] = 3
 
-        assert fifo.keys() == [2, 3]
+        assert list(fifo.keys()) == [2, 3]
 
         _a = fifo[2]
         # Nothing changes
-        assert fifo.keys() == [2, 3]
+        assert list(fifo.keys()) == [2, 3]
 
         fifo[2] = 2
-        assert fifo.keys() == [3, 2]
+        assert list(fifo.keys()) == [3, 2]

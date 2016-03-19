@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
+import six
+
 
 class Memoize(object):
     """
@@ -126,7 +128,7 @@ class Memoize(object):
             return args
 
         # Obtain key from the args we received, plus whatever defaults we have in our argspec.
-        return args + tuple(argspec.values()[len(args):])
+        return args + tuple(list(argspec.values())[len(args):])
 
 
     def _GetArgspecObject(self, args, trail, kwargs, defaults):
@@ -199,7 +201,7 @@ class Memoize(object):
                 else:
                     raise TypeError('Expecting a function/method/classmethod for Memoize.')
             else:
-                if 'self' in check_func.func_code.co_varnames:
+                if 'self' in six.get_function_code(check_func).co_varnames:
                     self._memo_target = self.MEMO_INSTANCE_METHOD
                 else:
                     # If it's a classmethod, it should enter here (and the cls will
@@ -211,7 +213,8 @@ class Memoize(object):
 
         # Create call wrapper, and make it look like the real function
         call = self._CreateCallWrapper(func)
-        call.func_name = func.func_name
+        if six.PY2:
+            call.func_name = func.func_name
         call.__name__ = func.__name__
         call.__doc__ = func.__doc__
         return call

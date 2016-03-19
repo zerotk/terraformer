@@ -169,7 +169,7 @@ class WeakMethodRef(object):
             @return:
                 None if the original object doesn't exist anymore.
         """
-        import new
+        #import new
 
         if self.is_dead():
             return None

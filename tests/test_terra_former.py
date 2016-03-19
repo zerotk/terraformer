@@ -18,10 +18,11 @@ def testImportBlockZero(monkeypatch, embed_data):
             terra_former.AddImportSymbol(i_symbol)
         terra_former.ReorganizeImports()
 
-        # Make sure that creating a TerraFormer won't make any changes to the AST
+        # Make sure that creating a TerraFormer won't make any changes to the
+        # AST
         assert terra_former.GenerateSource() == expected
 
-        assert map(str, terra_former.import_blocks) == import_blocks
+        assert list(map(str, terra_former.import_blocks)) == import_blocks
 
     TestIt(
         '''
@@ -276,7 +277,7 @@ def testTerraFormer(monkeypatch, embed_data):
         'zulu.Z3',
     }
 
-    assert map(str, terra_former.import_blocks) == [
+    assert list(map(str, terra_former.import_blocks)) == [
         'IMPORT-BLOCK (1, 0) import-block #0\n'
         '  IMPORT (1, 0) bravo\n'
         '  IMPORT (2, 0) charlie\n'

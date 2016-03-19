@@ -7,6 +7,9 @@ import sys
 #===================================================================================================
 # _StreamWrapper
 #===================================================================================================
+import six
+
+
 class _StreamWrapper(object):
     """
     A simple wrapper to decode bytes into unicode objects before writing to an unicode-only stream.
@@ -54,21 +57,28 @@ def PrintDetailedTraceback(exc_info=None, stream=None, max_levels=None, max_line
     """
     from zerotk.terraformer.exceptions import ExceptionToUnicode
     from zerotk.terraformer.klass import IsInstance
-    import StringIO
-    import cStringIO
     import io
     import locale
 
-    assert not IsInstance(stream, (StringIO.StringIO, cStringIO.OutputType)), 'Old-style StringIO passed to PrintDetailedTraceback()'
+    if six.PY2:
+        import StringIO
+        import cStringIO
+        string_io_types = (StringIO.StringIO, cStringIO.OutputType)
+    else:
+        import io
+        string_io_types = (io.StringIO)
+
+    assert not IsInstance(stream, string_io_types), \
+        'Old-style StringIO passed to PrintDetailedTraceback()'
 
     # For sys.stderr and sys.stdout, we should encode the unicode objects before writing.
     def _WriteToEncodedStream(message):
-        assert type(message) is unicode
+        assert type(message) is six.text_type
         encoding = getattr(stream, 'encoding', None)
         stream.write(message.encode(encoding or 'utf-8', errors='replace'))
 
     def _WriteToUnicodeStream(message):
-        assert type(message) is unicode
+        assert type(message) is six.text_type
         stream.write(message)
 
     if stream is None:
