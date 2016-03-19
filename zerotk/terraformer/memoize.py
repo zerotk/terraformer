@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 
 class Memoize(object):
-    '''
+    """
     This class is meant to be used as a decorator.
 
     It decorates a class so that values can be cached (and later pruned from that cache).
@@ -32,7 +32,7 @@ class Memoize(object):
 
     Note that non-declared keyword arguments (`**kwargs`) are forbidden. Offer proper support for it may cause a
     prohibitive overhead.
-    '''
+    """
 
     # This should be the simplest (and fastest) way of caching things: what gets in first
     # is removed first.
@@ -45,7 +45,7 @@ class Memoize(object):
 
 
     def __new__(cls, *args, **kwargs):
-        '''
+        """
         We have to override __new__ so that we treat receiving it with and without parameters,
         as the parameters are both optional and we want to support receiving it without parameters.
 
@@ -53,7 +53,7 @@ class Memoize(object):
         @Memoize
         def double(x):
             return x * 2
-        '''
+        """
 
         if not kwargs and len(args) == 1 and not isinstance(args[0], int):
             # We received a single argument and it's a function (no parameters received:
@@ -68,7 +68,7 @@ class Memoize(object):
 
 
     def __init__(self, maxsize=50, prune_method=FIFO, memo_target=MEMO_FROM_ARGSPEC):
-        '''
+        """
         :param int maxsize:
             The maximum size of the internal cache (default is 50).
 
@@ -83,7 +83,7 @@ class Memoize(object):
             it'll fall to using the MEMO_INSTANCE_METHOD (otherwise the MEMO_FUNCTION is used)
             If the signature of the function is 'special' and doesn't follow the conventions,
             the memo_target MUST be specified.
-        '''
+        """
 
         self._prune_method = prune_method
         self._maxsize = maxsize
@@ -91,7 +91,7 @@ class Memoize(object):
 
 
     def _GetCacheKey(self, args, kwargs):
-        '''
+        """
         Subclasses may override to provide a different cache key. The default implementation
         just handles the arguments.
 
@@ -106,7 +106,7 @@ class Memoize(object):
 
             This tuple is normalized with values for all arguments that the function receives,
             based on `args` and `kwargs` passed in this call, in addition to any default values.
-        '''
+        """
         # `argspec` list explicitly declared parameters and their default values.
         has_default, argspec = self._argspec
 
@@ -130,7 +130,7 @@ class Memoize(object):
 
 
     def _GetArgspecObject(self, args, trail, kwargs, defaults):
-        '''
+        """
         Create the argspec object that helps when creating the cache key. Subclasses may want to customize the argspec
         object to help offer customized cache key generation algorithm.
 
@@ -152,7 +152,7 @@ class Memoize(object):
             This object will be set as `self._argspec`, this object can be used by `self._GetCacheKey`.
             The base class uses a tuple with a bool indication if default are present and a `coilib50.basic.odict.odict`
             that is a mapping of "parameter name" -> "default value" (a string is used when the is no default).
-        '''
+        """
         named_arguments = OrderedDict()
         if kwargs is not None:
             raise TypeError(
@@ -176,13 +176,13 @@ class Memoize(object):
 
 
     def __call__(self, func):
-        '''
+        """
         :param function func:
             This is the function which should be decorated.
 
         :return function:
             The function decorated to cache the values based on the arguments.
-        '''
+        """
         import inspect
 
         if self._memo_target == self.MEMO_FROM_ARGSPEC:
@@ -218,7 +218,7 @@ class Memoize(object):
 
 
     def _CreateCacheObject(self):
-        '''
+        """
         Creates the cache object we want.
 
         :returns object:
@@ -226,7 +226,7 @@ class Memoize(object):
             is reached).
 
             This object has a dict interface.
-        '''
+        """
         if self._prune_method == self.FIFO:
             from .fifo import FIFO
             return FIFO(self._maxsize)
@@ -240,12 +240,12 @@ class Memoize(object):
 
 
     def _CreateCallWrapper(self, func):
-        '''
+        """
         This function creates a FIFO cache
 
         :param object func:
             This is the function that is being cached.
-        '''
+        """
         SENTINEL = []
         if self._memo_target == self.MEMO_INSTANCE_METHOD:
 
@@ -267,9 +267,9 @@ class Memoize(object):
                 return res
 
             def ClearCache(self):
-                '''
+                """
                 Clears the cache for a given instance (note that self must be passed as a parameter).
-                '''
+                """
                 cache = getattr(self, cache_name, None)
                 if cache is not None:
                     cache.clear()

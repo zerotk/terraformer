@@ -1,12 +1,12 @@
 from __future__ import unicode_literals
-'''
+"""
 frozen
 Setup the sys.frozen attribute when the application is not in release mode.
 This attribute is automatically set when the source code is in an executable.
 
 Use "IsFrozen" instead of "sys.frozen == False" because some libraries (pywin32) checks for the
 attribute existence, not the value.
-'''
+"""
 import sys
 
 
@@ -15,17 +15,17 @@ _is_frozen = hasattr(sys, 'frozen') and getattr(sys, 'frozen')
 
 
 def IsFrozen():
-    '''
+    """
     Returns true if the code is frozen, that is, the code is inside a generated executable.
 
     Frozen == False means the we are running the code using Python interpreter, usually associated with the code being
     in development.
-    '''
+    """
     return _is_frozen
 
 
 def SetIsFrozen(is_frozen):
-    '''
+    """
     Sets the is_frozen value manually, overriding the "calculated" value.
 
     :param bool is_frozen:
@@ -33,7 +33,7 @@ def SetIsFrozen(is_frozen):
 
     :returns bool:
         Returns the original value, before the given value is set.
-    '''
+    """
     global _is_frozen
     try:
         return _is_frozen
@@ -43,7 +43,7 @@ def SetIsFrozen(is_frozen):
 
 _is_development = not _is_frozen
 def IsDevelopment():
-    '''
+    """
     This function is used to indentify if we're in a development environment or production
     environment.
 
@@ -56,12 +56,12 @@ def IsDevelopment():
         return True in frozen environment, particularly when running tests on the executable.
 
         ..seealso:: SetIsDevelopment to understand why.
-    '''
+    """
     return _is_development
 
 
 def SetIsDevelopment(is_development):
-    '''
+    """
     :param bool is_development:
         The new is-development value, which is returned by ..seealso:: IsDevelopment.
 
@@ -78,7 +78,7 @@ def SetIsDevelopment(is_development):
     DevelopmentCheckType is an example of a method using IsDevelopment to be enabled.
 
     So always mind this difference and think.
-    '''
+    """
     global _is_development
     try:
         return _is_development

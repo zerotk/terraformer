@@ -8,9 +8,9 @@ import sys
 # _StreamWrapper
 #===================================================================================================
 class _StreamWrapper(object):
-    '''
+    """
     A simple wrapper to decode bytes into unicode objects before writing to an unicode-only stream.
-    '''
+    """
     def __init__(self, stream, encoding):
         self.stream = stream
         self.encoding = encoding
@@ -23,7 +23,7 @@ class _StreamWrapper(object):
 # PrintDetailedTraceback
 #===================================================================================================
 def PrintDetailedTraceback(exc_info=None, stream=None, max_levels=None, max_line_width=120, omit_locals=False):
-    '''
+    """
     Prints a more detailed traceback than Python's original one showing, for each frame, also the
     locals at that frame and their values.
 
@@ -51,7 +51,7 @@ def PrintDetailedTraceback(exc_info=None, stream=None, max_levels=None, max_line
         especially interesting if an error during a function may expose sensitive data, like an user
         private information as a password. Defaults to false as most cases won't be interested in
         this feature.
-    '''
+    """
     from zerotk.terraformer.exceptions import ExceptionToUnicode
     from zerotk.terraformer.klass import IsInstance
     import StringIO

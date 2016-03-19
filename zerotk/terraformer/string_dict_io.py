@@ -1,7 +1,7 @@
 
 
 class StringDictIO(object):
-    '''
+    """
     Saves dictionaries into plain text files.
 
     Assumes all keys and values are strings.
@@ -13,10 +13,10 @@ class StringDictIO(object):
 
         Ak = Av
         Bk = Bv
-    '''
+    """
     @classmethod
     def Save(cls, dictionary, target_filename, sort_items=False):
-        '''
+        """
         Writes a dictionary into a file.
 
         :param unicode filename:
@@ -24,7 +24,7 @@ class StringDictIO(object):
 
         :param bool sort_items:
             If True, saved dict will be sorted alphabetically
-        '''
+        """
         items = dictionary.items()
         if sort_items:
             items = sorted(items)
@@ -36,7 +36,7 @@ class StringDictIO(object):
 
     @classmethod
     def Load(cls, filename, inverted=False):
-        '''
+        """
         Loads a dictionary from a file.
 
         :param unicode filename:
@@ -47,7 +47,7 @@ class StringDictIO(object):
 
         :returns dict:
             Dictionary that was loaded
-        '''
+        """
         from zerotk.easyfs import GetFileContents
         contents = GetFileContents(filename)
 

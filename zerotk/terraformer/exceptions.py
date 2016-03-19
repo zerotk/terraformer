@@ -8,7 +8,7 @@ import six
 # ExceptionToUnicode
 #===================================================================================================
 def ExceptionToUnicode(exception):
-    '''
+    """
     Obtains unicode representation of an Exception.
 
     This wrapper is used to circumvent Python 2.7 problems with built-in exceptions with unicode
@@ -24,7 +24,7 @@ def ExceptionToUnicode(exception):
 
     :return unicode:
         Unicode representation of an Exception.
-    '''
+    """
     try:
         # First, try to obtain __unicode__ as defined by the Exception
         return unicode(exception)

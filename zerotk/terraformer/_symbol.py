@@ -1,16 +1,15 @@
 from __future__ import unicode_literals
-from .decorators import Comparable, Override
+
 import os
 
+from .decorators import Comparable, Override
 
-#===================================================================================================
-# Symbol
-#===================================================================================================
+
 class Symbol(object):
-    '''
+    """
     Represents a python symbol definition.
     This is also the base class for other kinds of symbols.
-    '''
+    """
 
     PREFIX = 'DEF'
 
@@ -34,14 +33,12 @@ class Symbol(object):
         self._children = []
         self.SetParent(parent)
 
-
     def SetParent(self, parent):
         if self.parent:
             self.RemoveFromParent()
         self.parent = parent
         if self.parent:
             self.parent._children.append(self)
-
 
     def RemoveFromParent(self):
         for i, i_child in enumerate(self.parent._children):
@@ -51,22 +48,18 @@ class Symbol(object):
                 return True
         return False
 
-
     def _AsString(self):
         return '%s (%d, %d) %s' % (self.PREFIX, self.lineno, self.column, self.name)
-
 
     def AsString(self, indent=0):
         indentation = '  ' * indent
         result = [indentation + self._AsString()]
         for i_child in self._children:
-            result.append(i_child.AsString(indent+1))
+            result.append(i_child.AsString(indent + 1))
         return '\n'.join(result)
-
 
     def __str__(self):
         return self.AsString()
-
 
     def HandleArgs(self, args, nodes):
         for i_arg in args:
@@ -75,9 +68,8 @@ class Symbol(object):
             else:
                 SymbolArgument(self, i_arg.value, i_arg)
 
-
     def CreateCode(self, indent, page_width):
-        '''
+        """
         Create a lib2to3 code for this symbol.
 
         For now only import-block related symbols have this implemented, but later we'll have more
@@ -91,27 +83,26 @@ class Symbol(object):
             The generated code will have at most this width (in characters).
 
         :return list(lib2to3.Node):
-        '''
+        """
         raise NotImplementedError()
 
-
     def Walk(self):
-        '''
+        """
         Iterates over the symbols.
 
         :return iter(Symbol):
-        '''
+        """
         yield self
         for i_child in self._children:
             for j_child in i_child.Walk():
                 yield j_child
 
-
     @classmethod
     def _InsertCodeBeforeNode(cls, node, code):
 
         if not node.parent:
-            raise TypeError("Can't insert before node that doesn't have a parent.")
+            raise TypeError(
+                "Can't insert before node that doesn't have a parent.")
 
         if not isinstance(code, list):
             code = [code]
@@ -129,15 +120,14 @@ class Symbol(object):
         node.parent.changed()
 
 
-
-#===================================================================================================
+#=========================================================================
 # Scope
-#===================================================================================================
+#=========================================================================
 class Scope(Symbol):
-    '''
+    """
     Represents a python scope.
     Symbols that define a scope derive from this class (Eg.: method, class), giving it a prefix.
-    '''
+    """
 
     def __init__(self, parent, name, code, code_replace=None):
         Symbol.__init__(self, parent, name, code, code_replace=code_replace)
@@ -152,20 +142,20 @@ class Scope(Symbol):
 
 
 class SymbolArgument(Symbol):
-    '''
+    """
     Represents a argument symbol definition.
-    '''
+    """
 
     PREFIX = 'ARG'
 
 
 class SymbolUsage(Symbol):
-    '''
+    """
     Represents a symbol usage.
 
     Later on we'll link each symbol-usage with the declaration it refers, either a import symbol or
     a locally defined symbol such as a class, method or variable.
-    '''
+    """
 
     PREFIX = 'USE'
 
@@ -177,13 +167,12 @@ class SymbolUsage(Symbol):
             i_node.remove()
 
 
-
-#===================================================================================================
+#=========================================================================
 # ImportSymbol
-#===================================================================================================
+#=========================================================================
 @Comparable
 class ImportSymbol(Symbol):
-    '''
+    """
     Represents an import symbol.
 
     Examples:
@@ -199,7 +188,7 @@ class ImportSymbol(Symbol):
 
     :cvar str import_as:
         Optional rename of the import (import XXX as YYY)
-    '''
+    """
 
     PREFIX = 'IMPORT'
 
@@ -207,7 +196,7 @@ class ImportSymbol(Symbol):
     KIND_IMPORT_FROM = 297
 
     def __init__(self, parent, name, import_as=None, comment='', kind=KIND_IMPORT_NAME, lineno=0):
-        '''
+        """
         :param str symbol:
             The import-symbol.
 
@@ -220,7 +209,7 @@ class ImportSymbol(Symbol):
 
         :param KIND_IMPORT_XXX kind:
             The kind of import.
-        '''
+        """
         assert isinstance(name, (str, unicode))
         assert isinstance(comment, (str, unicode))
         assert kind in (self.KIND_IMPORT_NAME, self.KIND_IMPORT_FROM)
@@ -230,17 +219,15 @@ class ImportSymbol(Symbol):
         self.comment = comment
         self.lineno = lineno
 
-        if '.' not in name and kind==self.KIND_IMPORT_FROM:
+        if '.' not in name and kind == self.KIND_IMPORT_FROM:
             kind = self.KIND_IMPORT_NAME
         self.kind = kind
-
 
     def __repr__(self):
         return '<ImportSymbol "%s">' % self.name
 
-
     def Copy(self, parent=None, name=None):
-        '''
+        """
         Creates a copy of this instance, optionally replacing some attributes with the given ones.
 
         :param parent:
@@ -250,7 +237,7 @@ class ImportSymbol(Symbol):
             If not None, uses this value instead of the instance's attribute as the copy name.
 
         :return ImportSymbol:
-        '''
+        """
         return self.__class__(
             parent or self.parent,
             name or self.name,
@@ -260,9 +247,8 @@ class ImportSymbol(Symbol):
             self.lineno,
         )
 
-
     def GetPackageName(self):
-        '''
+        """
         Returns the import-symbol prefix.
 
         This is only valid for import-symbols of type import-from, in which case it returns
@@ -274,34 +260,32 @@ class ImportSymbol(Symbol):
             'alpha'
 
         :return str:
-        '''
+        """
         if self.kind == self.KIND_IMPORT_FROM:
             assert '.' in self.name
             return self.name.rsplit('.', 1)[0]
         else:
             return None
 
-
     def GetToken(self):
-        '''
+        """
         Returns the import token of a import-symbol of kind import-from.
         Returns the symbol if kind is import-name.
 
         :return str:
-        '''
+        """
         if self.kind == self.KIND_IMPORT_FROM:
             assert '.' in self.name, "ERROR: Import-symbol 'from' has no dot in it: \"%s\"" % self.name
             return self.name.rsplit('.', 1)[1]
         else:
             return self.name
 
-
     def _cmpkey(self):
-        '''
+        """
         Implements @Comparable._cmpkey.
 
         Make sure that
-        '''
+        """
         index = 0
         if self.name.startswith('_'):
             index = -1
@@ -309,9 +293,8 @@ class ImportSymbol(Symbol):
             index = 1
         return index, self.name
 
-
     def CreateNameNode(self, prefix=' '):
-        '''
+        """
         Creates a lib2to3.Node containing the name part of the import-symbol.
         This is REused by CreateCode implementation for this class and the "ImportFromScope."
 
@@ -319,7 +302,7 @@ class ImportSymbol(Symbol):
             The node prefix.
 
         :return lib2to3.Node:
-        '''
+        """
         from lib2to3 import pygram
         from lib2to3.fixer_util import Name
         from lib2to3.pytree import Node
@@ -335,7 +318,6 @@ class ImportSymbol(Symbol):
             )
         else:
             return Name(self.GetToken(), prefix=prefix)
-
 
     @Override(Symbol.CreateCode)
     def CreateCode(self, indent, page_width):
@@ -356,13 +338,12 @@ class ImportSymbol(Symbol):
         return [result]
 
 
-
-#===================================================================================================
+#=========================================================================
 # ImportFromScope
-#===================================================================================================
+#=========================================================================
 @Comparable
 class ImportFromScope(Scope):
-    '''
+    """
     We're representing a import-from import as a scope that contains import-symbols as child
     symbols.
 
@@ -382,20 +363,19 @@ class ImportFromScope(Scope):
         ---
         form bravo import Bravo
         from charlie import Charlie
-    '''
+    """
 
     PREFIX = 'IMPORT-FROM'
 
-
     def Copy(self, name):
-        '''
+        """
         Creates a copy of this instance, optionally replacing some attributes with the given ones.
 
         :param name:
             If not None, uses this value instead of the instance's attribute as the copy name.
 
         :return ImportFromScope:
-        '''
+        """
 
         result = self.__class__(
             self.parent,
@@ -406,16 +386,14 @@ class ImportFromScope(Scope):
             i_child.Copy(parent=result)
         return result
 
-
     def _cmpkey(self):
-        '''
+        """
         Implements Comparable._cmpkey.
-        '''
+        """
         index = -100
         if self.name.startswith('_'):
             index = -101
         return index, self.name
-
 
     @Override(Symbol.CreateCode)
     def CreateCode(self, indent, page_width):
@@ -424,10 +402,10 @@ class ImportFromScope(Scope):
         from lib2to3.pytree import Node
 
         def _CreateCode(indent, package, symbols, comment):
-            '''
+            """
             Create code:
                 from <package> import <symbols> # <comment>
-            '''
+            """
             # children: the children nodes for the final from-import statement
             children = [
                 Name('from', prefix=' ' * indent),
@@ -445,8 +423,10 @@ class ImportFromScope(Scope):
             # nodes_wrap: if true, we need to wrap the import statement
             nodes_wrap = False
             line_len = 0
-            line_len += reduce(lambda x, y:x + y, map(len, map(str, children)), 0)
-            line_len += reduce(lambda x, y:x + y, map(len, map(str, name_leafs)), 0)
+            line_len += reduce(lambda x, y: x + y,
+                               map(len, map(str, children)), 0)
+            line_len += reduce(lambda x, y: x + y,
+                               map(len, map(str, name_leafs)), 0)
             if line_len > page_width:
                 # Add parenthesis around the "from" names
                 name_leafs[0].prefix = ''
@@ -460,7 +440,8 @@ class ImportFromScope(Scope):
             # from_import: the final node for the import statement
             from_import = Node(pygram.python_symbols.import_from, children)
 
-            # result: a simple-statement node with the import statement and EOL.
+            # result: a simple-statement node with the import statement and
+            # EOL.
             new_line = Newline()
             new_line.prefix = comment
             result = Node(
@@ -494,63 +475,59 @@ class ImportFromScope(Scope):
         return result
 
 
-
-#===================================================================================================
+#=========================================================================
 # ClassScope
-#===================================================================================================
+#=========================================================================
 class ClassScope(Scope):
-    '''
+    """
     Represents a class symbol declaration, which also declares a scope.
-    '''
+    """
 
     PREFIX = 'class'
 
 
-
-#===================================================================================================
+#=========================================================================
 # FunctionScope
-#===================================================================================================
+#=========================================================================
 class FunctionScope(Scope):
-    '''
+    """
     Represents a function symbol declaration, which also declares a scope.
-    '''
+    """
 
     PREFIX = 'def'
 
 
-
-#===================================================================================================
+#=========================================================================
 # ModuleScope
-#===================================================================================================
+#=========================================================================
 class ModuleScope(Scope):
-    '''
+    """
     Represents a module declaration, which also declares a scope.
-    '''
+    """
 
     PREFIX = 'module'
 
 
-
-#===================================================================================================
+#=========================================================================
 # ImportBlock
-#===================================================================================================
+#=========================================================================
 class ImportBlock(Scope):
-    '''
+    """
     A import-block is a semantic scope created here in order to group import-statements together for
     reorganizing and refactoring algorithms.
-    '''
+    """
 
     PREFIX = 'IMPORT-BLOCK'
 
     PYTHON_EXT = '.py'
 
     def __init__(self, parent, code, code_replace, id, lineno, indent):
-        Scope.__init__(self, parent, 'import-block #%d' % id, code, code_replace=code_replace)
+        Scope.__init__(self, parent, 'import-block #%d' %
+                       id, code, code_replace=code_replace)
         self.id = id
 
-
     def Refactor(self, refactor={}):
-        '''
+        """
         Perform the refactor for this import-block, renaming all children import-statements using
         the given refactor dictionary.
 
@@ -559,13 +536,14 @@ class ImportBlock(Scope):
             * Suffix the old symbol name with '$' if you want it in the end of the symbol.
             * Prefix the new value with "from " to force "import-from" syntax even if the symbol
               was originally imported as an "import-name".
-        '''
+        """
         for i_import_symbol in [i for i in self._WalkImportSymbols()]:
             new_name = refactor.get(i_import_symbol.name)
             if new_name is None:
                 new_name = refactor.get(i_import_symbol.name + '$')
                 if new_name is None:
-                    new_package = refactor.get(i_import_symbol.GetPackageName())
+                    new_package = refactor.get(
+                        i_import_symbol.GetPackageName())
                     if new_package is not None:
                         new_name = new_package + '.' + i_import_symbol.GetToken()
 
@@ -585,9 +563,8 @@ class ImportBlock(Scope):
                 )
                 i_import_symbol.RemoveFromParent()
 
-
     def FixLocalSymbols(self, filename):
-        '''
+        """
         Tries to rename some imports to use local symbols if they are available.
 
         This is necessary to avoid import loops in the following conditions:
@@ -619,10 +596,10 @@ class ImportBlock(Scope):
 
         :param str filename:
         :return:
-        '''
+        """
 
         def LocalImportRename(import_symbol, filename):
-            '''
+            """
             Converts the given import-symbol into a local import.
 
             Terms:
@@ -630,11 +607,12 @@ class ImportBlock(Scope):
                 * init: refers to package (__init__.py)
                 * local: refers to the module, found in the same location the "working" module, that contains a symbol
                   used by the working symbol.
-            '''
+            """
             from ._terra_former import TerraFormer
 
             # CASE: Renaming the symbol is ignored because we don't want to change the code.
-            #       IDEA: We could change only the "left" side of the import leaving the rename intact.
+            # IDEA: We could change only the "left" side of the import leaving
+            # the rename intact.
             if import_symbol.import_as:
                 return
 
@@ -650,7 +628,8 @@ class ImportBlock(Scope):
             working_token = import_symbol.GetToken()
 
             if working_token == '*':
-                # CASE: Importing all symbols from a module/package. This case is ignored.
+                # CASE: Importing all symbols from a module/package. This case
+                # is ignored.
                 return
 
             # Obtain the package __init__.py filename
@@ -665,18 +644,19 @@ class ImportBlock(Scope):
             if init_package_name is None:
                 return
 
-            # CASE: The symbol matches one found in the package, but it is from another package, not this one.
+            # CASE: The symbol matches one found in the package, but it is from
+            # another package, not this one.
             if import_symbol.GetPackageName() != init_package_name:
                 return
 
             # CASE: Finally, we found that we are importing a symbol available in a local module using a global import.
-            #       In this case we fix it using the same local import as the package __init__.py is using.
+            # In this case we fix it using the same local import as the package
+            # __init__.py is using.
             result = package_terra_former.GetSymbolFromToken(working_token)
             if result is None:
                 return
 
             return result.name
-
 
         for i_import_symbol in [i for i in self._WalkImportSymbols()]:
             new_name = LocalImportRename(i_import_symbol, filename)
@@ -691,13 +671,12 @@ class ImportBlock(Scope):
                 )
                 i_import_symbol.RemoveFromParent()
 
-
     def _WalkImportSymbols(self):
-        '''
+        """
         Iterator for import-symbols.
 
         :return iter(ImportSymbol):
-        '''
+        """
         for i_child in self._children:
             if isinstance(i_child, ImportSymbol):
                 yield i_child
@@ -708,16 +687,15 @@ class ImportBlock(Scope):
             else:
                 raise TypeError()
 
-
     def Reorganize(self, page_width=100, refactor={}, filename=None):
-        '''
+        """
         Reorganize the import-statements replacing the previous code by brand new import-statements.
 
         :param int page_width:
         :param dict refactor:
         :param str filename:
         :return:
-        '''
+        """
         if self._children:
 
             if refactor:
@@ -761,14 +739,13 @@ class ImportBlock(Scope):
             for i_node in self.code_replace:
                 i_node.remove()
 
-
     def ObtainImportFromScope(self, name):
-        '''
+        """
         Returns an ImportFromScope associated with the given name, creating one if necessary.
 
         :param str name:
         :return ImportFromScope:
-        '''
+        """
         result = ImportFromScope(None, name, None)
         try:
             index = self._children.index(result)
@@ -778,19 +755,18 @@ class ImportBlock(Scope):
             result = self._children[index]
         return result
 
-
     def ObtainImportSymbol(
-            self,
-            name,
-            import_as=None,
-            comment='',
-            kind=ImportSymbol.KIND_IMPORT_NAME,
-            lineno=0
-        ):
+        self,
+        name,
+        import_as=None,
+        comment='',
+        kind=ImportSymbol.KIND_IMPORT_NAME,
+        lineno=0
+    ):
         result = ImportSymbol(None, name, import_as, comment, kind, lineno)
         package = result.GetPackageName()
 
-        if kind==ImportSymbol.KIND_IMPORT_FROM and package is not None:
+        if kind == ImportSymbol.KIND_IMPORT_FROM and package is not None:
             parent = self.ObtainImportFromScope(package)
         else:
             parent = self
@@ -803,9 +779,8 @@ class ImportBlock(Scope):
             result = parent._children[index]
         return result
 
-
     def CreateCode(self, symbols, indent, page_width, filename=None):
-        '''
+        """
         Create lib2to3 nodes from the internal information.
 
         :param int page_width:
@@ -814,12 +789,11 @@ class ImportBlock(Scope):
         :param str filename:
             The name of the module we're working on.
             This is necessary for the local-imports algorithm.
-        '''
+        """
         result = []
         for i_symbol in sorted(symbols):
             result += i_symbol.CreateCode(indent, page_width)
         return result
-
 
     @classmethod
     def _WalkLeafs(cls, node):
@@ -832,10 +806,9 @@ class ImportBlock(Scope):
                 for j_leaf in cls._WalkLeafs(i_child):
                     yield j_leaf
 
-
     @classmethod
     def TextWrapForNode(cls, node, max_width, indent, start_at='(', end_at=')'):
-        '''
+        """
         Wrap the given node so it fits in max-width.
 
         Changes the nodes in-place.
@@ -855,12 +828,13 @@ class ImportBlock(Scope):
 
         :param str end_at:
             The value of the node to disable the wrapping.
-        '''
+        """
         started = False
         cumulative_len = 0
         symbols_count = 0
         for i_leaf in cls._WalkLeafs(node):
-            # TODO: BEN-28: [terraformer] Consider the EOL prefix in the cumulative_len, since it can contain comments
+            # TODO: BEN-28: [terraformer] Consider the EOL prefix in the
+            # cumulative_len, since it can contain comments
             if i_leaf.value == '\n':
                 break
 
@@ -873,8 +847,9 @@ class ImportBlock(Scope):
             else:
                 symbols_count += 1
 
-                if i_leaf.prefix not in ( ', ', ',\n', '\n', ' ', ''):
-                    raise NotImplementedError('Unexpected token prefix "%s"' % i_leaf.prefix)
+                if i_leaf.prefix not in (', ', ',\n', '\n', ' ', ''):
+                    raise NotImplementedError(
+                        'Unexpected token prefix "%s"' % i_leaf.prefix)
 
                 leaf_len = len(str(i_leaf))
                 cumulative_len += leaf_len

@@ -1,4 +1,7 @@
 six
+zerotk.easyfs
+zerotk.clikit
+zerotk.reraiseit
 
 # Development
 coverage

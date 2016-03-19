@@ -6,11 +6,11 @@ from __future__ import unicode_literals
 # ASTError
 #===================================================================================================
 class ASTError(Exception):
-    '''
+    """
     Exception associated with any error handling the AST tree.
 
     This is actually a visitor error sinde the AST tree must be well formed before we start.
-    '''
+    """
 
 
 
@@ -18,7 +18,7 @@ class ASTError(Exception):
 # ASTVisitor
 #===================================================================================================
 class ASTVisitor(object):
-    '''
+    """
     The ASTVisitor walk through the code ast nodes calling specific methods for specific matches on
     the code.
 
@@ -27,7 +27,7 @@ class ASTVisitor(object):
 
     The methods prefixed with "Visit" are called with better (processed) parameters than "_Visit"
     methods.
-    '''
+    """
 
     PATTERNS = [
         ('_VisitAll', "file_input< nodes=any* >"),
@@ -59,7 +59,7 @@ class ASTVisitor(object):
 
 
     def _RegisterPattern(self, method, pattern):
-        '''
+        """
         Registers a new pattern and the handling method.
 
         :param str method:
@@ -68,20 +68,20 @@ class ASTVisitor(object):
         :param str pattern:
             The pattern to match AST nodes.
             This follows the lib2to3 pattern syntax.
-        '''
+        """
         from lib2to3.patcomp import compile_pattern
         self.patterns.append((method, compile_pattern(pattern)))
 
 
     def Visit(self, tree):
-        '''
+        """
         Main entry point of the ASTVisitor class.
 
         Visits AST nodes calling specific _VisitXXX implementation based on matching patterns.
 
         :param lib2to3.Node tree:
             A lib2to3 AST tree.
-        '''
+        """
         self.EvVisitStart(tree)
         self._Visit(tree)
         self.EvVisitEnd(tree)
@@ -90,11 +90,11 @@ class ASTVisitor(object):
     # Events ---------------------------------------------------------------------------------------
 
     def EvVisitStart(self, tree):
-        '''
+        """
         Event associated with the start of the AST visiting.
 
         :param lib2to3.Node tree:
-        '''
+        """
         from ._symbol import ModuleScope
         from lib2to3.pygram import python_symbols
         from lib2to3.pytree import Leaf
@@ -111,7 +111,7 @@ class ASTVisitor(object):
 
 
     def _CreateImportBlock(self, parent, code_position, code_replace, lineno, indent=0):
-        '''
+        """
         Creates a import-block, a semantic scope that groups import-statements.
 
         :param Symbol parent:
@@ -131,7 +131,7 @@ class ASTVisitor(object):
             The import-block indentation level (in number of characters).
 
         :return ImportBlockScope:
-        '''
+        """
         from ._symbol import ImportBlock
 
         id = len(self.import_blocks)
@@ -148,15 +148,15 @@ class ASTVisitor(object):
 
 
     def EvVisitEnd(self, tree):
-        '''
+        """
         Event associated with the end of the AST visiting.
 
         :param lib2to3.Node tree:
-        '''
+        """
 
 
     def EvVisitLeaf(self, leaf):
-        '''
+        """
         Visiting a leaf node.
 
         In this implementation we handle two things:
@@ -164,7 +164,7 @@ class ASTVisitor(object):
         * Identifying name tokens (either definition or use).
 
         :param lib2to3.Leaf leaf:
-        '''
+        """
         from lib2to3.pgen2 import token
 
         def CreateImportBlockZero(code_position):
@@ -196,14 +196,14 @@ class ASTVisitor(object):
 
 
     def EvVisitName(self, body):
-        '''
+        """
         Visiting a name.
 
         NOTE: Today we have two ways of identifying symbols definitions and usage: EvVisitSymbol and
         EvVisitName
 
         :param lib2to3.Leaf body:
-        '''
+        """
         current_scope = self._scope_stack[-1]
         symbol = body.value
 
@@ -214,7 +214,7 @@ class ASTVisitor(object):
 
 
     def EvVisitImport(self, names, import_from, body):
-        '''
+        """
         Visiting an import statement.
 
         :param list(str) names:
@@ -225,7 +225,7 @@ class ASTVisitor(object):
 
         :param lib2to3.Node body:
             The raw AST node with the import-statement.
-        '''
+        """
         from ._lib2to3 import GetNodeLineNumber
 
         if not self.import_blocks and body.prefix:
@@ -259,9 +259,9 @@ class ASTVisitor(object):
 
 
     def _CreateImportSymbols(self, names, import_from, inline_comment, lineno):
-        '''
+        """
         Creates import-symbols.
-        '''
+        """
         from ._symbol import ImportSymbol, ImportBlock
 
         assert self._current_import_block is not None
@@ -293,13 +293,13 @@ class ASTVisitor(object):
 
 
     def EvVisitSymbol(self, symbol, nodes, body):
-        '''
+        """
         Visiting a (power) symbol, that is, a symbol defined as an
         attribute of another symbol (Eg.: alpha.bravo).
 
         NOTE: Today we have two ways of identifying symbols definitions and usage: EvVisitSymbol and
         EvVisitName
-        '''
+        """
         current_scope = self._scope_stack[-1]
         if self._assignment == 1:  # Assignee
             current_scope.AddSymbolDefinition(symbol, body)
@@ -308,7 +308,7 @@ class ASTVisitor(object):
 
 
     def EvVisitAssignment(self, name, value, body):
-        '''
+        """
         Visiting an assignment statement.
 
         We use the _assignment attribute and continue visiting both sides of the assignment.
@@ -323,7 +323,7 @@ class ASTVisitor(object):
 
         :param body:
             The entire assignment body.
-        '''
+        """
         assert len(body.children) == 3
         assert body.children[0] is name
         assert body.children[2] is value
@@ -336,13 +336,13 @@ class ASTVisitor(object):
 
 
     def EvVisitClass(self, name, bases, body):
-        '''
+        """
         Visiting a class definition.
 
         :param str name: The name of the class.
         :param list(str) bases: The base classes.
         :param lib2to3.Node body: The (entire) class definition body Node.
-        '''
+        """
         from ._symbol import ClassScope, FunctionScope
 
         self._current_import_block = None
@@ -366,13 +366,13 @@ class ASTVisitor(object):
 
 
     def EvVisitFuncion(self, name, args, body):
-        '''
+        """
         Visiting function definition.
 
         :param str name: The name of the function.
         :param list(str) args: The function arguments
         :param lib2to3.Node body: The (entire) function definition body Node.
-        '''
+        """
         from ._symbol import FunctionScope
 
         self._current_import_block = None
@@ -392,24 +392,24 @@ class ASTVisitor(object):
     # Utitilites -----------------------------------------------------------------------------------
 
     def _GetImportBlockLineNumber(self, node):
-        '''
+        """
         Obtain the line number for the import-block.
 
         NOTE: WIP: return a valid number but not the correct line number.
-        '''
+        """
         from ._lib2to3 import GetNodeLineNumber
 
         return GetNodeLineNumber(node) - node.prefix.count('\n')
 
 
     def _GetFirstLeaf(self, node):
-        '''
+        """
         Returns the first leaf child from the given node.
 
         :param lib2to3.Node node:
 
         :return lib2to3.Leaf:
-        '''
+        """
         from lib2to3.pytree import Leaf
 
         r_leaf = node
@@ -419,9 +419,9 @@ class ASTVisitor(object):
 
 
     def _CreateNewImportBlock(self, body, prefix, indent):
-        '''
+        """
         Create a new import-block.
-        '''
+        """
         from ._lib2to3 import GetNodeLineNumber
 
         code_replace = [body]
@@ -443,12 +443,12 @@ class ASTVisitor(object):
     # Pattern Handlers -----------------------------------------------------------------------------
 
     def _Visit(self, tree):
-        '''
+        """
         Recursive implementation of Visit.
 
         :param lib2to3.Node tree:
             A lib2to3 AST tree.
-        '''
+        """
         from lib2to3.pytree import Leaf, Node
 
         if isinstance(tree, Leaf):
@@ -463,17 +463,17 @@ class ASTVisitor(object):
 
 
     def _VisitAll(self, results):
-        '''
+        """
         Top level visitor handler.
-        '''
+        """
         self._Visit(results['nodes'])
 
 
     def _VisitNode(self, node):
-        '''
+        """
         Visitor handler for nodes.
         Check for matching pattern (and matching visitor handler) or visits each child node.
-        '''
+        """
         for method, pattern in self.patterns:
             results = {}
             if pattern.match(node, results):
@@ -485,10 +485,10 @@ class ASTVisitor(object):
 
 
     def _VisitClass(self, results):
-        '''
+        """
         Visitor handler for class.
         Organize the parameters to call EvVisitClass.
-        '''
+        """
         self.EvVisitClass(
             name=results['name'].value,
             bases=_DeriveClassNames(results.get('bases')),
@@ -497,10 +497,10 @@ class ASTVisitor(object):
 
 
     def _VisitFunction(self, results):
-        '''
+        """
         Visitor handler for function/method.
         Organize the parameters to call EvVisitFunction.
-        '''
+        """
         self.EvVisitFuncion(
             name=results['name'].value,
             args=_DeriveArguments(results.get('args', [])),
@@ -509,10 +509,10 @@ class ASTVisitor(object):
 
 
     def _VisitImport(self, results):
-        '''
+        """
         Visitor handler for import-statement.
         Organize the parameters to call EvVisitImport.
-        '''
+        """
         self.EvVisitImport(
             names=_DeriveImportNames(results['names']),
             import_from=_DeriveImportName(results.get('import_from')),
@@ -521,10 +521,10 @@ class ASTVisitor(object):
 
 
     def _VisitPowerSymbol(self, results):
-        '''
+        """
         Visitor handler for power symbols.
         Organize the parameters to call EvVisitSymbol.
-        '''
+        """
         left=results.get('left')
         middle=results.get('middle')
         right=results.get('right')
@@ -538,10 +538,10 @@ class ASTVisitor(object):
 
 
     def _VisitAssignment(self, results):
-        '''
+        """
         Visitor handler for assignments.
         Organize the parameters to call EvVisitAssignment.
-        '''
+        """
         name=results.get('name')
         value=results.get('value')
         self.EvVisitAssignment(
@@ -560,7 +560,7 @@ class ASTVisitor(object):
 
 
 def _IsLeafOfType(leaf, *types):
-    '''
+    """
     Check if the leaf is of one of the given types.
 
     :param lib2to3.Leaf leaf:
@@ -569,14 +569,14 @@ def _IsLeafOfType(leaf, *types):
         Usually a token.XXX constant.
 
     :return bool:
-    '''
+    """
     from lib2to3.pytree import Leaf
 
     return isinstance(leaf, Leaf) and leaf.type in types
 
 
 def _IsNodeOfType(node, *types):
-    '''
+    """
     Check if the node is of one of the given types.
 
     :param lib2to3.Node node:
@@ -585,34 +585,34 @@ def _IsNodeOfType(node, *types):
         The name of the node type.
 
     :return bool:
-    '''
+    """
     from lib2to3.pytree import Node, type_repr
     return isinstance(node, Node) and type_repr(node.type) in types
 
 
 def _RemoveCommas(nodes):
-    '''
+    """
     Remove comma nodes from the given list of nodes.
 
     Used to remove commas from the function/method argument list.
 
     :param list(lib2to3.Node) nodes:
     :return list(list2to3.Node):
-    '''
+    """
     from lib2to3.pgen2 import token
 
     return [i for i in nodes if not _IsLeafOfType(i, token.COMMA)]
 
 
 def _RemoveDefaults(nodes):
-    '''
+    """
     Remove default values from a list of nodes.
 
     Used to remove the default values from the function/method argument list.
 
     :param list(lib2to3.Node) nodes:
     :return iter(list2to3.Node):
-    '''
+    """
     from lib2to3.pgen2 import token
 
     ignore_next = False
@@ -627,22 +627,22 @@ def _RemoveDefaults(nodes):
 
 
 def _DeriveClassName(node):
-    '''
+    """
     Clean-up a node that represents a class name.
 
     :param lib2to3.Node node:
     :return unicode:
-    '''
+    """
     return unicode(node).strip()
 
 
 def _DeriveClassNames(node):
-    '''
+    """
     Clean-up a node that represents a list of classes (derived classes).
 
     :param lib2to3.Node node:
     :return list(unicode):
-    '''
+    """
     if node is None:
         return []
     elif _IsNodeOfType(node, 'arglist'):
@@ -652,12 +652,12 @@ def _DeriveClassNames(node):
 
 
 def _DeriveArgument(node):
-    '''
+    """
     Returns a node or tuple of nodes for the node.
 
     :param lib2to3.Node node:
     :return lib2to3.Node|tuple(lib2to3.Node):
-    '''
+    """
     from lib2to3.pgen2 import token
 
     if _IsLeafOfType(node, token.NAME):
@@ -672,7 +672,7 @@ def _DeriveArgument(node):
 
 
 def _DeriveArgumentsFromTypedArgList(node):
-    '''
+    """
     Returns a list of arguments from a node of type "typedarglist".
 
     NOTE: I converted this method to return the Node instead of the string. With this I've lost the
@@ -680,7 +680,7 @@ def _DeriveArgumentsFromTypedArgList(node):
 
     :param lib2to3.Node node:
     :return list(lib2to3.Node):
-    '''
+    """
     from lib2to3.pgen2 import token
 
     prefix = ''
@@ -697,14 +697,14 @@ def _DeriveArgumentsFromTypedArgList(node):
 
 
 def _DeriveArguments(node):
-    '''
+    """
     Returns a list of arguments from a node.
 
     NOTE: I converted this method to return the Node instead of the string.
 
     :param lib2to3.Node node:
     :return list(lib2to3.Node):
-    '''
+    """
     if node == []:
         return []
     elif _IsNodeOfType(node, 'typedargslist'):
@@ -714,12 +714,12 @@ def _DeriveArguments(node):
 
 
 def _DeriveImportName(node):
-    '''
+    """
     Returns the text for the given "import name" node.
 
     :param lib2to3.Node node:
     :return unicode:
-    '''
+    """
     from lib2to3.pgen2 import token
 
     if _IsLeafOfType(node, token.NAME, token.STAR, token.DOT):
@@ -738,12 +738,12 @@ def _DeriveImportName(node):
 
 
 def _DeriveImportNames(node):
-    '''
+    """
     Returns the text for the given "import names" node.
 
     :param lib2to3.Node node:
     :return list(unicode):
-    '''
+    """
     if node is None:
         return None
     elif _IsNodeOfType(node, 'dotted_as_names', 'import_as_names'):

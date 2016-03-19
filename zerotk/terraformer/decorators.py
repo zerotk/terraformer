@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
-'''
+"""
 Collection of decorator with ONLY standard library dependencies.
-'''
+"""
 from .is_frozen import IsDevelopment
 import warnings
 
@@ -11,7 +11,7 @@ import warnings
 # Override
 #===================================================================================================
 def Override(method):
-    '''
+    """
     Decorator that marks that a method overrides a method in the superclass.
 
     :param type method:
@@ -35,7 +35,7 @@ def Override(method):
         @Overrides(MyInterace.foo)
         def foo():
             pass
-    '''
+    """
     def Wrapper(func):
         if func.__name__ != method.__name__:
             msg = "Wrong @Override: %r expected, but overwriting %r."
@@ -55,7 +55,7 @@ def Override(method):
 # Implements
 #===================================================================================================
 def Implements(method):
-    '''
+    """
     Decorator that marks that a method implements a method in some interface.
 
     :param function method:
@@ -83,7 +83,7 @@ def Implements(method):
         @Implements(MyInterace.foo)
         def foo():
             pass
-    '''
+    """
     def Wrapper(func):
         if func.__name__ != method.__name__:
             msg = "Wrong @Implements: %r expected, but overwriting %r."
@@ -103,12 +103,12 @@ def Implements(method):
 # Deprecated
 #===================================================================================================
 def Deprecated(name=None):
-    '''
+    """
     Decorator that marks a method as deprecated.
 
     :param unicode name:
         The name of the method that substitutes this one, if any.
-    '''
+    """
     if not IsDevelopment():
         # Optimization: we don't want deprecated to add overhead in release mode.
 
@@ -117,15 +117,15 @@ def Deprecated(name=None):
 
     else:
         def DeprecatedDecorator(func):
-            '''
+            """
             The actual deprecated decorator, configured with the name parameter.
-            '''
+            """
 
             def DeprecatedWrapper(*args, **kwargs):
-                '''
+                """
                 This method wrapper gives a deprecated message before calling the original
                 implementation.
-                '''
+                """
                 if name is not None:
                     msg = 'DEPRECATED: \'%s\' is deprecated, use \'%s\' instead' % (func.__name__, name)
                 else:
@@ -145,7 +145,7 @@ def Deprecated(name=None):
 # Abstract
 #===================================================================================================
 def Abstract(func):
-    '''
+    """
     Decorator to make methods 'abstract', which are meant to be overwritten in subclasses. If some
     subclass doesn't override the method, it will raise NotImplementedError when called. Note that
     this decorator should be used together with :dec:Override.
@@ -156,9 +156,9 @@ def Abstract(func):
 
             @Abstract
             def Foo(self):
-                """
+                \"\"\"
                 This method ...
-                """
+                \"\"\"
                 # no body required here; an exception will be raised automatically
 
 
@@ -168,13 +168,13 @@ def Abstract(func):
             def Foo(self):
                 ...
 
-    '''
+    """
 
     def AbstractWrapper(self, *args, **kwargs):
-        '''
+        """
         This wrapper method replaces the implementation of the (abstract) method, providing a
         friendly message to the user.
-        '''
+        """
         # # Unused argument args, kwargs
         # # pylint: disable-msg=W0613
         msg = 'method %r not implemented in class %r.' % (func.__name__, self.__class__)
@@ -188,10 +188,10 @@ def Abstract(func):
 
 
 def Comparable(cls):
-    '''
+    """
     Class fixture that implements all rich comparison methods based on the implementation of
     _cmpkey.
-    '''
+    """
     def _compare(this, other, method):
         try:
             return method(this._cmpkey(), other._cmpkey())

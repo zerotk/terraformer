@@ -1,15 +1,17 @@
 from __future__ import unicode_literals
-from zerotk.easyfs import EOL_STYLE_UNIX, FindFiles, IsDir, StandardizePath
-from zerotk.clikit.app import App
+
 from functools import partial
 from io import StringIO
 
+from zerotk.clikit.app import App
+from zerotk.easyfs import EOL_STYLE_UNIX, FindFiles, IsDir, StandardizePath
 
 app = App('terraformer')
 
 
 # Valid extensions for fix-format.
-EXTENSIONS = {'.py', '.cpp', '.c', '.h', '.hpp', '.hxx', '.cxx', '.java', '.js'}
+EXTENSIONS = {'.py', '.cpp', '.c', '.h',
+              '.hpp', '.hxx', '.cxx', '.java', '.js'}
 
 # Python extensions.
 # This is overridden for test purposes.
@@ -18,21 +20,22 @@ PYTHON_EXT = '.py'
 
 @app
 def Symbols(console_, filename):
-    '''
+    """
     List all symbols in the given python source code. Currently only lists IMPORTS.
 
     :param filename: Python source code.
-    '''
+    """
     from zerotk.terraformer import TerraFormer
 
     terra = TerraFormer.Factory(filename)
-    for i_import_symbol in sorted(terra.symbols, key=lambda x:(x.lineno, x.column, x.name)):
-        console_.Print('%d: IMPORT %s' % (i_import_symbol.lineno, i_import_symbol.name))
+    for i_import_symbol in sorted(terra.symbols, key=lambda x: (x.lineno, x.column, x.name)):
+        console_.Print('%d: IMPORT %s' %
+                       (i_import_symbol.lineno, i_import_symbol.name))
 
 
 @app
 def FixFormat(console_, refactor=None, python_only=False, single_job=False, sorted=False, inverted_refactor=False, *sources):
-    '''
+    """
     Perform the format fixes on sources files, including tabs, eol, eol-spaces and imports.
 
     Fix-format details:
@@ -58,7 +61,7 @@ def FixFormat(console_, refactor=None, python_only=False, single_job=False, sort
     :param sorted: Sort the output.
     :param inverted_refactor: Invert refactor names and values loaded from refactor file.
     :param sources: Source directories or files.
-    '''
+    """
     from functools import partial
 
     def GetRefactorDict(refactor_filename, inverted):
@@ -78,7 +81,7 @@ def FixFormat(console_, refactor=None, python_only=False, single_job=False, sort
 
 @app
 def AddImportSymbol(console_, import_symbol, single_job=False, *sources):
-    '''
+    """
     Adds an import-symbol in all files.
 
     The import statement is added in the first line of the code, before comments but after module
@@ -87,20 +90,21 @@ def AddImportSymbol(console_, import_symbol, single_job=False, *sources):
     :param sources: Source directories or files.
     :param import_symbol: The symbol to import. Ex. "__future__.unicode_literals"
     :param single_job: Avoid using multithread (for testing purposes).
-    '''
+    """
     filenames = _GetFilenames(sources, [PYTHON_EXT])
-    partial_add_import_symbol = partial(_AddImportSymbol, import_symbol=import_symbol)
+    partial_add_import_symbol = partial(
+        _AddImportSymbol, import_symbol=import_symbol)
     _Map(console_, partial_add_import_symbol, filenames, sorted, True)
 
 
 @app
 def FixCommit(console_, source, single_job=False):
-    '''
+    """
     Perform the format fixes on sources files on a git repository modified files.
 
     :param source: A local git repository working directory.
     :param single_job: Avoid using multithread (for testing purposes).
-    '''
+    """
 
     def GetFilenames(cwd):
         from gitit.git import Git
@@ -108,8 +112,10 @@ def FixCommit(console_, source, single_job=False):
         git = Git.GetSingleton()
 
         working_dir = git.GetWorkingDir(cwd)
-        staged_filenames = git.Execute('diff --name-only --diff-filter=ACM --staged', repo_path=working_dir)
-        changed_filenames = git.Execute('diff --name-only --diff-filter=ACM', repo_path=working_dir)
+        staged_filenames = git.Execute(
+            'diff --name-only --diff-filter=ACM --staged', repo_path=working_dir)
+        changed_filenames = git.Execute(
+            'diff --name-only --diff-filter=ACM', repo_path=working_dir)
 
         r_filenames = staged_filenames + changed_filenames
         r_filenames = set(r_filenames)
@@ -125,7 +131,7 @@ def FixCommit(console_, source, single_job=False):
 
 @app
 def FixIsFrozen(console_, *sources):
-    '''
+    """
     Fix some pre-determinated set of symbols usage with the format:
 
         <module>.<symbol>
@@ -141,17 +147,22 @@ def FixIsFrozen(console_, *sources):
     to also act on imported symbols usage.
 
     :param sources: List of directories or files to process.
-    '''
+    """
     from zerotk.easyfs import CreateFile, EOL_STYLE_UNIX, FindFiles, GetFileContents
 
     FIND_REPLACE = [
         ('StringIO', 'StringIO', 'from io import StringIO'),
         ('cStringIO', 'StringIO', 'from io import StringIO'),
-        ('coilib50.IsFrozen', 'IsFrozen', 'from ben10.foundation.is_frozen import IsFrozen'),
-        ('coilib50.IsDevelopment', 'IsDevelopment', 'from ben10.foundation.is_frozen import IsDevelopment'),
-        ('coilib50.SetIsFrozen', 'SetIsFrozen', 'from ben10.foundation.is_frozen import SetIsFrozen'),
-        ('coilib50.SetIsDevelopment', 'SetIsDevelopment', 'from ben10.foundation.is_frozen import SetIsDevelopment'),
-        ('coilib40.basic.IsInstance', 'IsInstance', 'from ben10.foundation.klass import IsInstance'),
+        ('coilib50.IsFrozen', 'IsFrozen',
+         'from ben10.foundation.is_frozen import IsFrozen'),
+        ('coilib50.IsDevelopment', 'IsDevelopment',
+         'from ben10.foundation.is_frozen import IsDevelopment'),
+        ('coilib50.SetIsFrozen', 'SetIsFrozen',
+         'from ben10.foundation.is_frozen import SetIsFrozen'),
+        ('coilib50.SetIsDevelopment', 'SetIsDevelopment',
+         'from ben10.foundation.is_frozen import SetIsDevelopment'),
+        ('coilib40.basic.IsInstance', 'IsInstance',
+         'from ben10.foundation.klass import IsInstance'),
     ]
 
     PROPERTY_MODULE_SYMBOLS = [
@@ -172,10 +183,11 @@ def FixIsFrozen(console_, *sources):
     ]
     for i_symbol in PROPERTY_MODULE_SYMBOLS:
         FIND_REPLACE.append(
-            ('property.%s' % i_symbol, 'property_.%s' % i_symbol, 'from ben10 import property_'),
+            ('property.%s' % i_symbol, 'property_.%s' %
+             i_symbol, 'from ben10 import property_'),
         )
 
-    for i_filename in  _GetFilenames(sources, [PYTHON_EXT]):
+    for i_filename in _GetFilenames(sources, [PYTHON_EXT]):
         contents = GetFileContents(i_filename)
         imports = set()
         for i_find, i_replace, i_import in FIND_REPLACE:
@@ -190,7 +202,7 @@ def FixIsFrozen(console_, *sources):
             top_doc = False
             for i, i_line in enumerate(lines):
                 if i == 0:
-                    for i_top_doc in ("'''", '"""'):
+                    for i_top_doc in (""""", '"""'):
                         if i_top_doc in i_line:
                             console_.Print('TOPDOC START: %d' % i, indent=1)
                             top_doc = i_top_doc
@@ -217,16 +229,17 @@ def FixIsFrozen(console_, *sources):
             assert index is not None
             lines = lines[0:index] + list(imports) + lines[index:]
             contents = '\n'.join(lines)
-            CreateFile(i_filename, contents, eol_style=EOL_STYLE_UNIX, encoding='UTF-8')
+            CreateFile(i_filename, contents,
+                       eol_style=EOL_STYLE_UNIX, encoding='UTF-8')
 
 
 @app
 def FixEncoding(console_, *sources):
-    '''
+    """
     Fix python module files encoding, converting all non-ascii encoded files to UTF-8.
 
     :param sources: List of directories or files to process.
-    '''
+    """
     from zerotk.easyfs import CreateFile, GetFileContents
     import io
 
@@ -245,21 +258,26 @@ def FixEncoding(console_, *sources):
 
     for i_filename in _GetFilenames(sources, [PYTHON_EXT]):
         try:
-            # Try to open using ASCII. If it fails means that we have a non-ascii file.
+            # Try to open using ASCII. If it fails means that we have a
+            # non-ascii file.
             with io.open(i_filename, encoding='ascii') as iss:
                 iss.read()
         except UnicodeDecodeError:
             try:
                 line_no, encoding = GetPythonEncoding(i_filename)
                 if encoding is None:
-                    console_.Print('%s: <red>UKNOWN</r> Please configure the file coding.' % i_filename)
+                    console_.Print(
+                        '%s: <red>UKNOWN</r> Please configure the file coding.' % i_filename)
                     continue
-                console_.Item('%s: %s (line:%s)' % (i_filename, encoding, line_no))
-                lines = GetFileContents(i_filename, encoding=encoding).split('\n')
+                console_.Item('%s: %s (line:%s)' %
+                              (i_filename, encoding, line_no))
+                lines = GetFileContents(
+                    i_filename, encoding=encoding).split('\n')
                 del lines[line_no]
                 lines = ['# coding: UTF-8'] + lines
                 contents = '\n'.join(lines)
-                CreateFile(i_filename, contents, encoding='UTF-8', eol_style=EOL_STYLE_UNIX)
+                CreateFile(i_filename, contents, encoding='UTF-8',
+                           eol_style=EOL_STYLE_UNIX)
             except:
                 console_.Print('<red>%s: ERROR</>' % i_filename)
                 raise
@@ -267,11 +285,11 @@ def FixEncoding(console_, *sources):
 
 @app
 def FixStringio(console_, *sources):
-    '''
+    """
     Fix StringIO usage.
 
     :param sources: List of directories or files to process.
-    '''
+    """
     from terraformer import FileTooBigError, TerraFormer
 
     for i_filename in _GetFilenames(sources, [PYTHON_EXT]):
@@ -295,9 +313,8 @@ def FixStringio(console_, *sources):
             console_.Item('%s: FileTooBig (for TerraFormer)' % i_filename)
 
 
-
 def _GetFilenames(paths, extensions):
-    '''
+    """
     Lists filenames matching the given paths and extensions.
 
     :param paths:
@@ -306,7 +323,7 @@ def _GetFilenames(paths, extensions):
         List of extensions to match. Ex.: .py, .cpp.
     :return list:
         Returns a list of matching paths.
-    '''
+    """
     result = []
     for i_path in paths:
         if IsDir(i_path):
@@ -319,7 +336,7 @@ def _GetFilenames(paths, extensions):
 
 
 def _reorganize_imports(filename, refactor={}):
-    '''
+    """
     Reorganizes all import statements in the given filename, optionally performing a "move"
     refactoring.
 
@@ -344,7 +361,7 @@ def _reorganize_imports(filename, refactor={}):
 
     :return boolean:
         Returns True if the file was changed.
-    '''
+    """
     from zerotk.terraformer import TerraFormer
     from zerotk.reraiseit import reraise
 
@@ -358,11 +375,11 @@ def _reorganize_imports(filename, refactor={}):
 
 
 def _FixFormat(filename, refactor):
-    '''
+    """
     Perform the operation in a multi-threading friendly global function.
 
     The operation is to perform format fixes in the given python source code.
-    '''
+    """
     from zerotk.terraformer.print_detailed_traceback import PrintDetailedTraceback
 
     try:
@@ -387,11 +404,11 @@ def _FixFormat(filename, refactor):
 
 
 def _AddImportSymbol(filename, import_symbol):
-    '''
+    """
     Perform the operation in a multi-threading friendly global function.
 
     The operation is add a import-symbol to a filename.
-    '''
+    """
     from zerotk.terraformer import TerraFormer
 
     terra = TerraFormer.Factory(filename)
@@ -408,7 +425,7 @@ def _AddImportSymbol(filename, import_symbol):
 
 
 def _FilterFilenames(filenames, extensions=EXTENSIONS):
-    '''
+    """
     Filters the given filenames that don't match the given extensions.
 
     :param list(str) filenames:
@@ -419,7 +436,7 @@ def _FilterFilenames(filenames, extensions=EXTENSIONS):
 
     :return:
         List of filename.
-    '''
+    """
     import os
 
     if extensions is None:
@@ -432,7 +449,7 @@ def _FilterFilenames(filenames, extensions=EXTENSIONS):
 
 
 def _GetExtensions(python_only):
-    '''
+    """
     Returns a list of extensions based on command line options.
 
     :param bool python_only:
@@ -440,7 +457,7 @@ def _GetExtensions(python_only):
 
     :return list(str):
         List of extensions selected by the user.
-    '''
+    """
     if python_only:
         return {PYTHON_EXT}
     else:
@@ -448,7 +465,7 @@ def _GetExtensions(python_only):
 
 
 def _Map(console_, func, func_params, _sorted, single_job):
-    '''
+    """
     Executes func in parallel considering some options.
 
     :param callable func:
@@ -464,7 +481,7 @@ def _Map(console_, func, func_params, _sorted, single_job):
         Do not use multiprocessing algorithm.
         This is used for debug purposes.
     :return:
-    '''
+    """
 
     if single_job:
         import itertools

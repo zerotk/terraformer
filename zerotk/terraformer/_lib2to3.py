@@ -1,20 +1,24 @@
-'''
+"""
 Patches and fixes for lib2to3
-'''
-from __future__ import unicode_literals, absolute_import
-from .memoize import Memoize
+"""
+from __future__ import absolute_import, unicode_literals
+
+import sys
+
 from pypugly.text import dedent
 
+from .memoize import Memoize
 
+#=========================================================================
+# Replace lib2to3.pgen2.driver.load_gramar to avoid depending on external file
+# (Grammar.txt)
+#=========================================================================
 
-#===================================================================================================
-# Replace lib2to3.pgen2.driver.load_gramar to avoid depending on external file (Grammar.txt)
-#===================================================================================================
-
-# This is the same as Grammar.txt, reproduced here to avoid dependency to external file.
+# This is the same as Grammar.txt, reproduced here to avoid dependency to
+# external file.
 GRAMMAR = {}
 GRAMMAR['Grammar.txt'] = dedent(
-    '''
+    """
         # Grammar for 2to3. This grammar supports Python 2.x and 3.x.
 
         # Note:  Changing the grammar specified in this file will most likely
@@ -175,10 +179,10 @@ GRAMMAR['Grammar.txt'] = dedent(
         yield_expr: 'yield' [yield_arg]
         yield_arg: 'from' test | testlist
 
-        '''
+        """
 )
 GRAMMAR['PatternGrammar.txt'] = dedent(
-    '''
+    """
         # Copyright 2006 Google, Inc. All Rights Reserved.
         # Licensed to PSF under a Contributor Agreement.
 
@@ -208,12 +212,13 @@ GRAMMAR['PatternGrammar.txt'] = dedent(
 
         Details: '<' Alternatives '>'
 
-    '''
+    """
 )
+
 
 @Memoize
 def LoadGrammar(gt="Grammar.txt", gp=None, save=True, force=False, logger=None):
-    '''
+    """
     We replace the function that generates the grammar to remove the dependency with external
     files.
 
@@ -223,7 +228,7 @@ def LoadGrammar(gt="Grammar.txt", gp=None, save=True, force=False, logger=None):
         The gramar filename.
 
     :return PgenGrammar:
-    '''
+    """
     from cStringIO import StringIO
     import lib2to3.pgen2.pgen
     import os
@@ -235,9 +240,7 @@ def LoadGrammar(gt="Grammar.txt", gp=None, save=True, force=False, logger=None):
     return p.make_grammar()
 
 
-
-import sys
-if sys.version_info[:3] == (2,7,7):
+if sys.version_info[:3] == (2, 7, 7):
     # Only replace the LoadGrammar on Python 2.7.7, which matches with our stored grammar.
     # On other version (CentOS 7) uses the system algorithm. Remember that without this algorithm
     # we can't create executables that uses lib2to3.
@@ -245,18 +248,17 @@ if sys.version_info[:3] == (2,7,7):
     lib2to3.pgen2.driver.load_grammar = LoadGrammar
 
 
-
-#===================================================================================================
+#=========================================================================
 # GetNodeLineNumber
-#===================================================================================================
+#=========================================================================
 def GetNodeLineNumber(node):
-    '''
+    """
     Returns the given node line number.
 
     :param lib2to3.Node node:
 
     :return int:
-    '''
+    """
     parent = node
     while parent:
         if hasattr(parent, 'lineno'):
@@ -265,11 +267,11 @@ def GetNodeLineNumber(node):
     return 0
 
 
-#===================================================================================================
+#=========================================================================
 # GetNodePosition
-#===================================================================================================
+#=========================================================================
 def GetNodePosition(node):
-    '''
+    """
     Returns the given node position (line number and column).
 
     NOTE: Not quite sure which is the best way of obtaining the line number, this one or
@@ -278,7 +280,7 @@ def GetNodePosition(node):
     :param lib2to3.Node node:
 
     :return tuple(int, int):
-    '''
+    """
     try:
         child = node[0]
     except:

@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
-'''
+"""
     @author
         ama@esss.com.br
         fabioz@esss.com.br
-'''
+"""
 import six
 
 
@@ -16,9 +16,9 @@ __hierarchy_cache = {}
 # AllBasesNames
 #===================================================================================================
 def AllBasesNames(p_class):
-    '''
+    """
         :rtype: set with all the names of the bases classes of the given class.
-    '''
+    """
     try:
         return __bases_cache[p_class]
     except KeyError:
@@ -34,7 +34,7 @@ def AllBasesNames(p_class):
 # IsInstance
 #===================================================================================================
 def IsInstance(p_object, p_class_name):
-    '''
+    """
     :param object p_object:
         The object we would like to test for.
 
@@ -42,7 +42,7 @@ def IsInstance(p_object, p_class_name):
         Name or class to test if the object is an instance of.
 
     Like the built-in isinstance, but also accepts a class name as parameter.
-    '''
+    """
     try:
         # obtain the type of the class; using only type() is not enough, because some built-in
         # types don't respond to type() correctly (vtk objects for instance always return the
@@ -59,9 +59,9 @@ def IsInstance(p_object, p_class_name):
 # IsSubclass
 #===================================================================================================
 def IsSubclass(p_class, p_class_name):
-    '''
+    """
     Like the built-in issubclass, but also accepts a class name as parameter.
-    '''
+    """
     isins = isinstance  # put it in locals
 
     if isins(p_class_name, six.text_type):
@@ -104,9 +104,9 @@ def IsSubclass(p_class, p_class_name):
 # _IterClassHierarchy
 #===================================================================================================
 def _IterClassHierarchy(class_):
-    '''
+    """
         Iterates through the whole hierarchy of a given class (including the class itself)
-    '''
+    """
     yield class_
 
     iter = _IterClassHierarchy
@@ -119,9 +119,9 @@ def _IterClassHierarchy(class_):
 # GetClassHierarchy
 #===================================================================================================
 def GetClassHierarchy(class_):
-    '''
+    """
         :rtype: the class hierarchy for a given class in a flattened way as a set.
-    '''
+    """
     try:
         return __hierarchy_cache[class_]
     except:
@@ -132,7 +132,7 @@ def GetClassHierarchy(class_):
 # CheckOverridden
 #===================================================================================================
 def CheckOverridden(instance, current_method_class, method_name):
-    '''
+    """
     Checks if the current instance has overridden the given method from the passed class (to check
     if a method has a mandatory override).
 
@@ -161,7 +161,7 @@ def CheckOverridden(instance, current_method_class, method_name):
     If B().method() is called in this case it'll throw an error.
 
     This is meant for non-abstract methods where the user usually overrides and calls super().
-    '''
+    """
     if instance.__class__ == current_method_class:
         return
 

@@ -6,14 +6,14 @@ import weakref
 
 
 class WeakList(object):
-    '''
+    """
     The weak list is a list that will only keep weak-references to objects
     passed to it.
 
     When iterating the actual objects are used, but internally, only weakrefs
     are kept. It does not contain the whole list interface (but can be extended
     as needed).
-    '''
+    """
 
     def __init__(self, initlist=None):
         self.data = []
@@ -45,7 +45,7 @@ class WeakList(object):
 
 
     def remove(self, item):
-        '''
+        """
         Remove first occurrence of a value.
 
         It differs from the normal version because it will not raise an exception if the
@@ -53,7 +53,7 @@ class WeakList(object):
 
         :param object item:
             The object to be removed.
-        '''
+        """
         # iterate in a copy
         for ref in self.data[:]:
             d = ref()
@@ -78,12 +78,12 @@ class WeakList(object):
         return self.data[i]()
 
     def __getslice__(self, i, j):
-        '''
+        """
         :rtype: WeakList
         :returns:
             A new WeakList with the given slice (note that the actual size may not be what the user
             initially requested, as object may be garbage collected during that process).
-        '''
+        """
         i = max(i, 0)
         j = max(j, 0)
 
@@ -104,9 +104,9 @@ class WeakList(object):
 
 
     def __setitem__(self, i, item):
-        '''
+        """
         Set a weakref of item on the ith position
-        '''
+        """
         self.data[i] = GetWeakRef(item)
 
     def __str__(self):
@@ -125,7 +125,7 @@ class WeakList(object):
 # WeakMethodRef
 #===================================================================================================
 class WeakMethodRef(object):
-    '''
+    """
         Weak reference to bound-methods. This allows the client to hold a bound method
         while allowing GC to work.
 
@@ -133,7 +133,7 @@ class WeakMethodRef(object):
         boundmethods and returning a true boundmethod in the __call__() function.
 
         Keeps a reference to an object but doesn't prevent that object from being garbage collected.
-    '''
+    """
 
     __slots__ = [
         '_obj',
@@ -162,13 +162,13 @@ class WeakMethodRef(object):
 
 
     def __call__(self):
-        '''
+        """
             Return a new bound-method like the original, or the original function if refers just to
             a function or unbound method.
 
             @return:
                 None if the original object doesn't exist anymore.
-        '''
+        """
         import new
 
         if self.is_dead():
@@ -182,9 +182,9 @@ class WeakMethodRef(object):
 
 
     def is_dead(self):
-        '''Returns True if the referenced callable was a bound method and
+        """Returns True if the referenced callable was a bound method and
         the instance no longer exists. Otherwise, return False.
-        '''
+        """
         return self._obj is not None and self._obj() is None
 
 
@@ -227,10 +227,10 @@ class WeakMethodRef(object):
 # WeakMethodProxy
 #===================================================================================================
 class WeakMethodProxy(WeakMethodRef):
-    '''
+    """
         Like ref, but calling it will cause the referent method to be called with the same
         arguments. If the referent's object no longer lives, ReferenceError is raised.
-    '''
+    """
 
 
     def __call__(self, *args, **kwargs):
@@ -255,13 +255,13 @@ class WeakMethodProxy(WeakMethodRef):
 # WeakSet
 #===================================================================================================
 class WeakSet(object):
-    '''
+    """
     The weak set is a set that will only keep weak-references to objects passed to it.
 
     When iterating the actual objects are used, but internally, only weakrefs are kept.
 
     It does not contain the whole set interface (but can be extended as needed).
-    '''
+    """
 
     def __init__(self, initlist=None):
         self.data = set()
@@ -286,12 +286,12 @@ class WeakSet(object):
 
 
     def remove(self, item):
-        '''
+        """
         Remove an item from the available data.
 
         :param object item:
             The object to be removed.
-        '''
+        """
         self.data.remove(GetWeakRef(item))
 
 
@@ -317,9 +317,9 @@ class WeakSet(object):
 # IsWeakProxy
 #===================================================================================================
 def IsWeakProxy(obj):
-    '''
+    """
     Returns whether the given object is a weak-proxy
-    '''
+    """
     return isinstance(obj, (weakref.ProxyType, WeakMethodProxy))
 
 
@@ -328,9 +328,9 @@ def IsWeakProxy(obj):
 # IsWeakRef
 #===================================================================================================
 def IsWeakRef(obj):
-    '''
+    """
         Returns wheter ths given object is a weak-reference.
-    '''
+    """
     return isinstance(obj, (weakref.ReferenceType, WeakMethodRef)) and not isinstance(obj, WeakMethodProxy)
 
 
@@ -339,12 +339,12 @@ def IsWeakRef(obj):
 # IsWeakObj
 #===================================================================================================
 def IsWeakObj(obj):
-    '''
+    """
     Returns whether the given object is a weak object. Either a weak-proxy or a weak-reference.
 
     :param  obj: The object that may be a weak reference or proxy
     :return bool: True if it is a proxy or a weak reference.
-    '''
+    """
     return IsWeakProxy(obj) or IsWeakRef(obj)
 
 
@@ -353,9 +353,9 @@ def IsWeakObj(obj):
 # GetRealObj
 #===================================================================================================
 def GetRealObj(obj):
-    '''
+    """
     Returns the real-object from a weakref, or the object itself otherwise.
-    '''
+    """
     if IsWeakRef(obj):
         return obj()
     if isinstance(obj, LambdaType):
@@ -368,12 +368,12 @@ def GetRealObj(obj):
 # GetWeakProxy
 #===================================================================================================
 def GetWeakProxy(obj):
-    '''
+    """
     :param obj: This is the object we want to get as a proxy
     :return:
         Returns the object as a proxy (if it is still not already a proxy or a weak ref, in which case the passed object
         is returned itself)
-    '''
+    """
     if obj is None:
         return None
 
@@ -400,12 +400,12 @@ _EMPTY_LAMBDA = lambda:None
 # GetWeakRef
 #===================================================================================================
 def GetWeakRef(obj):
-    '''
+    """
     :type obj: this is the object we want to get as a weak ref
     :param obj:
     @return the object as a proxy (if it is still not already a proxy or a weak ref, in which case the passed
                                    object is returned itself)
-    '''
+    """
     if obj is None:
         return _EMPTY_LAMBDA
 
@@ -426,7 +426,7 @@ def GetWeakRef(obj):
 # IsSame
 #===================================================================================================
 def IsSame(o1, o2):
-    '''
+    """
         This checks for the identity even if one of the parameters is a weak reference
 
         :param  o1:
@@ -437,7 +437,7 @@ def IsSame(o1, o2):
 
         @raise
             RuntimeError if both of the passed parameters are weak references
-    '''
+    """
     # get rid of weak refs (we only need special treatment for proxys)
     if IsWeakRef(o1):
         o1 = o1()

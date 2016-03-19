@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from zerotk.terraformer.klass import (AllBasesNames, CheckOverridden,
-    GetClassHierarchy, IsInstance, IsSubclass)
+                                      GetClassHierarchy, IsInstance, IsSubclass)
 import pytest
 
 
@@ -39,14 +39,12 @@ class Test:
         assert set([_A, object]) == GetClassHierarchy(_A)
         assert set([_A, object]) == GetClassHierarchy(_A)
 
-
     def testIsInstance(self):
         assert IsInstance(_C(), '_B')
         assert IsInstance(_C(), ('_B',))
         assert not IsInstance(_C(), ('_A',))
         assert IsInstance(_C(), ('_A', '_B'))
         assert not IsInstance(_C(), ('_A', '_D'))
-
 
     def testIsSubclass(self):
         assert IsSubclass(_C, ('_C',))
@@ -56,7 +54,6 @@ class Test:
         assert IsSubclass(_C, ('_A', '_B'))
         assert not IsSubclass(_C, ('_A', '_D'))
         assert not IsSubclass(_A, ('_C',))
-
 
     def test_klass__serial(self):
 
@@ -82,7 +79,8 @@ class Test:
         assert set(AllBasesNames(B)) == set(['A', 'object'])
         assert set(AllBasesNames(C)) == set(['B', 'A', 'object'])
         assert set(AllBasesNames(D)) == set(['C', 'B', 'A', 'object'])
-        assert set(AllBasesNames(AlphaC)) == set(['Alpha', 'object', 'C', 'B', 'A'])
+        assert set(AllBasesNames(AlphaC)) == set(
+            ['Alpha', 'object', 'C', 'B', 'A'])
 
         assert IsInstance(A(), 'object')
         assert IsInstance(A(), 'A')
@@ -155,6 +153,7 @@ class Test:
 
     def testCheckOverridden(self):
         class A(object):
+
             def m1(self):
                 pass
 
@@ -162,10 +161,12 @@ class Test:
                 pass
 
         class B(A):
+
             def m1(self):
                 pass
 
         class C(A):
+
             def m2(self):
                 pass
 
