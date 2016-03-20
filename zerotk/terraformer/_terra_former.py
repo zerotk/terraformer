@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 import six
-from .memoize import Memoize
+from zerotk.memoize import Memoize
 
 from zerotk.easyfs import GetFileContents
 from zerotk.module_finder import ModuleFinder
