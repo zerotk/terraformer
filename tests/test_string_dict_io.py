@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 
 from zerotk.easyfs import CreateFile, GetFileContents
-from zerotk.terraformer.string_dict_io import StringDictIO
+from zerotk.string_dict_io import StringDictIO
 
 
 def testStringDictIO(embed_data):

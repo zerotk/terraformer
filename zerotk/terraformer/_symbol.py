@@ -4,7 +4,7 @@ import os
 
 import six
 
-from .decorators import Comparable, Override
+from zerotk.decorators import Comparable, Override
 
 
 class Symbol(object):

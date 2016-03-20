@@ -11,10 +11,10 @@ import pytest
 import six
 
 from zerotk.easyfs import CreateFile
-from zerotk.terraformer.print_detailed_traceback import PrintDetailedTraceback
+from zerotk.print_detailed_traceback import PrintDetailedTraceback
 
 
-def testPrintDetailedTraceback(embed_data):
+def testPrintDetailedTracebackBasics(embed_data):
 
     def Pad(seq):
         """Pads a sequence of strings with up to 4 leading '0' chars"""
@@ -23,7 +23,8 @@ def testPrintDetailedTraceback(embed_data):
             try:
                 result.append('0' * (4 - len(value)) + value)
             except TypeError:
-                # we raise our own exception because the message changes between python versions
+                # we raise our own exception because the message changes
+                # between python versions
                 raise TypeError("object of type 'int' has no len()")
         return result
 
@@ -50,8 +51,8 @@ def testPrintDetailedTraceback(embed_data):
     address_re = re.compile('at 0x([a-f0-9]+)', re.IGNORECASE)
     ss = re.sub(address_re, 'at 0x0', ss)
 
-    # "self" description because the name of the module changes if we run this test
-    # from the command line vs running it with runtests
+    # "self" description because the name of the module changes if we run this
+    # test from the command line vs running it with runtests
     self_re = re.compile('self = <.*>', re.IGNORECASE)
     ss = re.sub(self_re, 'self = <Test.testPrintDetailedTraceback>', ss)
 

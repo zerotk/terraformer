@@ -1,11 +1,10 @@
 from __future__ import unicode_literals
 
 import six
+from .memoize import Memoize
 
 from zerotk.easyfs import GetFileContents
-
-from .memoize import Memoize
-from .module_finder import ModuleFinder
+from zerotk.module_finder import ModuleFinder
 
 
 class FileTooBigError(RuntimeError):
@@ -113,7 +112,6 @@ class TerraFormer(object):
             return r_leaf
 
         # Prioritary import.
-        from . import _lib2to3  # @NotUsedImport
 
         # Other imports
         from zerotk.reraiseit import reraise

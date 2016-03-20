@@ -1,8 +1,10 @@
 from __future__ import unicode_literals
-from zerotk.terraformer.decorators import Implements
-from types import LambdaType
+
 import inspect
 import weakref
+from types import LambdaType
+
+from zerotk.decorators import Implements
 
 
 class WeakList(object):

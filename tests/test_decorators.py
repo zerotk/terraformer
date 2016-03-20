@@ -1,8 +1,11 @@
 from __future__ import unicode_literals
-from zerotk.terraformer import is_frozen
-from zerotk.terraformer.decorators import Abstract, Comparable, Deprecated, Implements, Override
-import pytest
+
 import warnings
+
+import pytest
+
+from zerotk.decorators import Abstract, Comparable, Deprecated, Implements, Override
+from zerotk.terraformer import is_frozen
 
 
 def testImplements():

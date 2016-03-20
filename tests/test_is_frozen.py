@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
-from zerotk.terraformer.is_frozen import IsDevelopment, IsFrozen, SetIsDevelopment, SetIsFrozen
 
+from zerotk.is_frozen import IsDevelopment, IsFrozen, SetIsDevelopment, SetIsFrozen
 
 
 def testIsFrozenIsDevelopment():

@@ -1,12 +1,7 @@
 from __future__ import unicode_literals
-import locale
+
 import sys
 
-
-
-#===================================================================================================
-# _StreamWrapper
-#===================================================================================================
 import six
 
 
@@ -22,9 +17,6 @@ class _StreamWrapper(object):
         self.stream.write(value.decode(self.encoding))
 
 
-#===================================================================================================
-# PrintDetailedTraceback
-#===================================================================================================
 def PrintDetailedTraceback(exc_info=None, stream=None, max_levels=None, max_line_width=120, omit_locals=False):
     """
     Prints a more detailed traceback than Python's original one showing, for each frame, also the
@@ -55,9 +47,8 @@ def PrintDetailedTraceback(exc_info=None, stream=None, max_levels=None, max_line
         private information as a password. Defaults to false as most cases won't be interested in
         this feature.
     """
-    from zerotk.terraformer.exceptions import ExceptionToUnicode
-    from zerotk.terraformer.klass import IsInstance
-    import io
+    from zerotk.exceptions import ExceptionToUnicode
+    from zerotk.klass import IsInstance
     import locale
 
     if six.PY2:
@@ -137,38 +128,42 @@ def PrintDetailedTraceback(exc_info=None, stream=None, max_levels=None, max_line
         _WriteToStream('  File "%(filename)s", line %(lineno)d, in %(name)s\n' % params)
 
         try:
+            import io
             lines = io.open(frame.f_code.co_filename).readlines()
             line = lines[frame.f_lineno - 1]
-        except:
+        except Exception as e:
             pass  # don't show the line source
         else:
             _WriteToStream('    %s\n' % line.strip())
 
         if not omit_locals:
-            # string used to truncate string representations of objects that exceed the maximum
-            # line size
+            # string used to truncate string representations of objects that
+            # exceed the maximum line size
             trunc_str = '...'
             for key, value in sorted(frame.f_locals.iteritems()):
                 ss = '            %s = ' % key
-                # be careful to don't generate any exception while trying to get the string
-                # representation of the value at the stack, because raising an exception here
-                # would shadow the original exception
+                # be careful to don't generate any exception while trying to
+                # get the string representation of the value at the stack,
+                # because raising an exception here would shadow the original
+                # exception
                 try:
                     val_repr = repr(value).decode(encoding)
                 except:
                     val_repr = '<ERROR WHILE PRINTING VALUE>'
                 else:
-                    # if the val_pre exceeds the maximium size, we truncate it in the middle
-                    # using trunc_str, showing the start and the end of the string:
+                    # if the val_pre exceeds the maximium size, we truncate it
+                    # in the middle using trunc_str, showing the start and the
+                    # end of the string:
                     # "[1, 2, 3, 4, 5, 6, 7, 8, 9]" -> "[1, 2, ...8, 9]"
                     if len(ss) + len(val_repr) > max_line_width:
                         space = max_line_width - len(ss) - len(trunc_str)
                         middle = int(space / 2)
-                        val_repr = val_repr[:middle] + trunc_str + val_repr[-(middle + len(trunc_str)):]
+                        val_repr = val_repr[:middle] + \
+                            trunc_str + \
+                            val_repr[-(middle + len(trunc_str)):]
 
                 _WriteToStream(ss + val_repr + '\n')
 
     message = ExceptionToUnicode(exception)
 
     _WriteToStream('%s: %s\n' % (exc_type.__name__, message))
-

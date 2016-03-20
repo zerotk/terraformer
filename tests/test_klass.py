@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 
 import pytest
 
-from zerotk.terraformer.klass import (AllBasesNames, CheckOverridden,
-    GetClassHierarchy, IsInstance, IsSubclass)
+from zerotk.klass import (AllBasesNames, CheckOverridden,
+                          GetClassHierarchy, IsInstance, IsSubclass)
 
 
 class _A(object):

@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
-from zerotk.terraformer.memoize import Memoize
 import pytest
+from zerotk.terraformer.memoize import Memoize
 
 
 class Test:
@@ -234,7 +234,7 @@ class Test:
         f = Foo()
         assert f.m1() is self._stub
 
-        from zerotk.terraformer.weak_ref import GetWeakRef
+        from zerotk.weak_ref import GetWeakRef
         self._stub = GetWeakRef(self._stub)
         assert f.m1() is self._stub()
         assert f.called

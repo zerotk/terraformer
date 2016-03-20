@@ -1,10 +1,12 @@
 # coding: UTF-8
 from __future__ import unicode_literals
-from zerotk.terraformer.exceptions import ExceptionToUnicode
+
 import locale
-import pytest
 import sys
 
+import pytest
+
+from zerotk.exceptions import ExceptionToUnicode
 
 
 def testExceptionToUnicode(exception_message, lpe_exception_message, fse_exception_message):

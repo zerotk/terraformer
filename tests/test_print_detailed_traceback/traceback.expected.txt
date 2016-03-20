@@ -1,5 +1,5 @@
 Traceback (most recent call last):
-  File "/path_to_file/file.py", line XX, in testPrintDetailedTraceback
+  File "/path_to_file/file.py", line XX, in testPrintDetailedTracebackBasics
     PrintDetailedTraceback(max_levels=2, stream=stream, max_line_width=100)
             Pad = <function Pad at 0x0>
             data = [u'0', u'1', u'2', 3, u'4', u'5', u'6',... u'94', u'95', u'96', u'97', u'98', u'99']

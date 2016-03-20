@@ -1,6 +1,8 @@
 from __future__ import unicode_literals
-from zerotk.terraformer.lru import LRU, LRUWithRemovalMemo, _DictWithRemovalMemo, _Node
+
 import pytest
+
+from zerotk.lru import LRU, LRUWithRemovalMemo, _Node
 
 
 class Test:

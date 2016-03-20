@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import itertools
 from heapq import heapify, heappop, heappush
 
-from zerotk.terraformer.decorators import Override
+from zerotk.decorators import Override
 
 DEFAULT_LRU_SIZE = 50
 

@@ -7,7 +7,7 @@ import six
 
 from zerotk.clikit.app import App
 from zerotk.easyfs import (
-    EOL_STYLE_UNIX, FindFiles, GetFileLines, IsDir, StandardizePath)
+    EOL_STYLE_UNIX, FindFiles, IsDir, StandardizePath)
 
 app = App('terraformer')
 
@@ -69,7 +69,7 @@ def FixFormat(console_, refactor=None, python_only=False, single_job=False, sort
     from functools import partial
 
     def GetRefactorDict(refactor_filename, inverted):
-        from zerotk.terraformer.string_dict_io import StringDictIO
+        from zerotk.string_dict_io import StringDictIO
 
         result = None
         if refactor is not None:
@@ -152,7 +152,7 @@ def FixIsFrozen(console_, *sources):
 
     :param sources: List of directories or files to process.
     """
-    from zerotk.easyfs import CreateFile, EOL_STYLE_UNIX, FindFiles, GetFileContents
+    from zerotk.easyfs import CreateFile, EOL_STYLE_UNIX, GetFileContents
 
     FIND_REPLACE = [
         ('StringIO', 'StringIO', 'from io import StringIO'),
@@ -390,7 +390,7 @@ def _FixFormat(filename, refactor):
 
     The operation is to perform format fixes in the given python source code.
     """
-    from zerotk.terraformer.print_detailed_traceback import PrintDetailedTraceback
+    from zerotk.print_detailed_traceback import PrintDetailedTraceback
 
     try:
         changed = False

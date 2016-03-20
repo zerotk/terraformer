@@ -231,11 +231,11 @@ class Memoize(object):
             This object has a dict interface.
         """
         if self._prune_method == self.FIFO:
-            from .fifo import FIFO
+            from zerotk.fifo import FIFO
             return FIFO(self._maxsize)
 
         elif self._prune_method == self.LRU:
-            from .lru import LRU
+            from zerotk.lru import LRU
             return LRU(self._maxsize)
 
         else:

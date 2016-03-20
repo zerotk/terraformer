@@ -6,8 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import sys
 
 from pypugly.text import dedent
-
-from .memoize import Memoize
+from zerotk.memoize import Memoize
 
 #=========================================================================
 # Replace lib2to3.pgen2.driver.load_gramar to avoid depending on external file

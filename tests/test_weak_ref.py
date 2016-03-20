@@ -6,7 +6,7 @@ import weakref
 import pytest
 import six
 
-from zerotk.terraformer.weak_ref import (
+from zerotk.weak_ref import (
     GetRealObj, GetWeakProxy, GetWeakRef, IsSame, IsWeakProxy, IsWeakRef,
     WeakList, WeakMethodProxy, WeakMethodRef, WeakSet)
 

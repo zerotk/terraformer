@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
-from zerotk.terraformer.fifo import FIFO
 
+from zerotk.fifo import FIFO
 
 
 #===================================================================================================
