@@ -6,15 +6,16 @@ from io import StringIO
 import six
 
 from zerotk.clikit.app import App
-from zerotk.easyfs import EOL_STYLE_UNIX, FindFiles, IsDir, StandardizePath, \
-    GetFileLines
+from zerotk.easyfs import (
+    EOL_STYLE_UNIX, FindFiles, GetFileLines, IsDir, StandardizePath)
 
 app = App('terraformer')
 
 
 # Valid extensions for fix-format.
-EXTENSIONS = {'.py', '.cpp', '.c', '.h',
-              '.hpp', '.hxx', '.cxx', '.java', '.js'}
+EXTENSIONS = {
+    '.py', '.cpp', '.c', '.h', '.hpp', '.hxx', '.cxx', '.java', '.js'
+}
 
 # Python extensions.
 # This is overridden for test purposes.
@@ -232,8 +233,12 @@ def FixIsFrozen(console_, *sources):
             assert index is not None
             lines = lines[0:index] + list(imports) + lines[index:]
             contents = '\n'.join(lines)
-            CreateFile(i_filename, contents,
-                       eol_style=EOL_STYLE_UNIX, encoding='UTF-8')
+            CreateFile(
+                i_filename,
+                contents,
+                eol_style=EOL_STYLE_UNIX,
+                encoding='UTF-8'
+            )
 
 
 @app
@@ -249,21 +254,16 @@ def FixEncoding(console_, *sources):
     def GetPythonEncoding(filename):
         import re
 
-        # with open(filename, mode='rb') as iss:
-        #     for i, i_line in enumerate(iss.readlines()):
-        #         if i > 10:
-        #             # Only searches the first lines for encoding information.
-        #             break
-        #         r = re.match('#.*coding[:=] *([\w\-\d]*)', i_line)
-        #         if r is not None:
-        #             return i, r.group(1)
-        for i, i_line in enumerate(GetFileLines(filename)):
-            if i > 10:
-                # Only searches the first lines for encoding information.
-                break
-            r = re.match('#.*coding[:=] *([\w\-\d]*)', i_line)
-            if r is not None:
-                return i, r.group(1)
+        # Read the file contents in a encoding agnostic way, after all we're
+        # trying to find out the file encoding.
+        with open(filename, mode='rb') as iss:
+            for i, i_line in enumerate(iss.readlines()):
+                if i > 10:
+                    # Only searches the first lines for encoding information.
+                    break
+                r = re.match(b'#.*coding[:=] *([\w\-\d]*)', i_line)
+                if r is not None:
+                    return i, r.group(1)
         return 0, None
 
     for i_filename in _GetFilenames(sources, [PYTHON_EXT]):
