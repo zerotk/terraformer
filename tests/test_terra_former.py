@@ -2,9 +2,9 @@ from __future__ import unicode_literals
 
 import pytest
 
-from pypugly.text import dedent
 from zerotk.clikit.pushpop import PushPop
 from zerotk.terraformer import TerraFormer
+from zerotk.text import dedent
 
 
 def testImportBlockZero(monkeypatch, embed_data):
