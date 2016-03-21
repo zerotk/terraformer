@@ -157,20 +157,24 @@ class Test:
         class A(object):
 
             def m1(self):
-                pass
+                """
+                """
 
             def m2(self):
-                pass
+                """
+                """
 
         class B(A):
 
             def m1(self):
-                pass
+                """
+                """
 
         class C(A):
 
             def m2(self):
-                pass
+                """
+                """
 
         CheckOverridden(B(), A, 'm1')
         CheckOverridden(C(), A, 'm2')

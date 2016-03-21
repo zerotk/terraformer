@@ -5,7 +5,7 @@ import warnings
 import pytest
 
 from zerotk.decorators import Abstract, Comparable, Deprecated, Implements, Override
-from zerotk.terraformer import is_frozen
+from zerotk import is_frozen
 
 
 def testImplements():

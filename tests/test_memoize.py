@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 
 import pytest
-from zerotk.terraformer.memoize import Memoize
+from zerotk.memoize import Memoize
 
 
 class Test:
@@ -358,7 +358,7 @@ class Test:
         Check(
             'call_no_positional',
             '''
-            from zerotk.terraformer.memoize import Memoize
+            from zerotk.memoize import Memoize
 
             @Memoize
             def Foo(arg1, arg2):
@@ -371,7 +371,7 @@ class Test:
         Check(
             'call_with_defaults',
             '''
-            from zerotk.terraformer.memoize import Memoize
+            from zerotk.memoize import Memoize
 
             @Memoize
             def Foo(arg1, arg2=None):
@@ -384,7 +384,7 @@ class Test:
         Check(
             'call_passing_kwargs',
             '''
-            from zerotk.terraformer.memoize import Memoize
+            from zerotk.memoize import Memoize
 
             @Memoize
             def Foo(arg1, arg2=None):
