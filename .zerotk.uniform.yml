@@ -15,7 +15,7 @@ install_requires:
   - zerotk.easyfs
   - zerotk.clikit
   - zerotk.reraiseit
-  - pypugly
+  - infi.traceback
 tests_require:
   - pytest
   - coverage

@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 
 from functools import partial
-from io import StringIO
 
 import six
+import sys
 
 from zerotk.clikit.app import App
 from zerotk.easyfs import (
@@ -38,7 +38,16 @@ def Symbols(console_, filename):
 
 
 @app
-def FixFormat(console_, refactor=None, python_only=False, single_job=False, sorted=False, inverted_refactor=False, *sources):
+def FixFormat(
+        console_,
+        refactor=None,
+        python_only=False,
+        single_job=False,
+        sorted=False,
+        inverted_refactor=False,
+        traceback_limit=None,
+        *sources
+    ):
     """
     Perform the format fixes on sources files, including tabs, eol, eol-spaces and imports.
 
@@ -64,6 +73,7 @@ def FixFormat(console_, refactor=None, python_only=False, single_job=False, sort
     :param single_job: Avoid using multithread (for testing purposes).
     :param sorted: Sort the output.
     :param inverted_refactor: Invert refactor names and values loaded from refactor file.
+    :param traceback_limit: The limit for detailed traceback. Used for testing.
     :param sources: Source directories or files.
     """
     from functools import partial
@@ -76,10 +86,21 @@ def FixFormat(console_, refactor=None, python_only=False, single_job=False, sort
             result = StringDictIO.Load(refactor_filename, inverted=inverted)
         return result
 
+    def or_none(f, *args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except:
+            return None
+
+    traceback_limit = or_none(int, traceback_limit)
     extensions = _GetExtensions(python_only)
     filenames = _GetFilenames(sources, extensions)
     refactor = GetRefactorDict(refactor, inverted_refactor)
-    partial_fix_format = partial(_FixFormat, refactor=refactor)
+    partial_fix_format = partial(
+        _FixFormat,
+        refactor=refactor,
+        traceback_limit=traceback_limit
+    )
     _Map(console_, partial_fix_format, filenames, sorted, True)
 
 
@@ -384,24 +405,25 @@ def _reorganize_imports(filename, refactor={}):
         reraise(e, 'On TerraForming.ReorganizeImports with filename: %s' % filename)
 
 
-def _FixFormat(filename, refactor):
+def _FixFormat(filename, refactor, traceback_limit=None):
     """
     Perform the operation in a multi-threading friendly global function.
 
     The operation is to perform format fixes in the given python source code.
     """
-    from zerotk.print_detailed_traceback import PrintDetailedTraceback
+    def traceback_as_text(limit):
+        from infi.traceback import format_tb
+        _exc_type, _exc_value, exc_traceback = sys.exc_info()
+        return '\n'.join(format_tb(exc_traceback, limit=limit))
 
     try:
         changed = False
         if filename.endswith(PYTHON_EXT):
             changed = _reorganize_imports(filename, refactor=refactor)
     except Exception as e:
-        oss = StringIO()
-        PrintDetailedTraceback(stream=oss)
         result = (
             '- %s: ERROR:\n  %s\n--- * ---\n%s' % (
-                filename, e, oss.getvalue()
+                filename, e, traceback_as_text(limit=traceback_limit)
             ),
             0
         )

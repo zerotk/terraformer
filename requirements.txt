@@ -2,7 +2,7 @@ six
 zerotk.easyfs
 zerotk.clikit
 zerotk.reraiseit
-pypugly
+infi.traceback
 
 # Development
 pytest

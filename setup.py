@@ -43,7 +43,7 @@ setup(
 
     keywords=['refactor', 'python'],
 
-    install_requires=['six', 'zerotk.easyfs', 'zerotk.clikit', 'zerotk.reraiseit', 'pypugly'],
+    install_requires=['six', 'zerotk.easyfs', 'zerotk.clikit', 'zerotk.reraiseit', 'infi.traceback'],
     setup_requires=['setuptools_scm', 'pytest-runner'],
     tests_require=['pytest', 'coverage', 'mock'],
 )

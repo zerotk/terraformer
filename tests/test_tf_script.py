@@ -117,6 +117,73 @@ def testFixFormat(embed_data):
     )
 
 
+def test_fix_format_error(embed_data):
+    """
+    Check _FixFormat error output (detailed traceback).
+    """
+    filename = embed_data['test_fix_format_error.py']
+    data_dir = embed_data.get_data_dir()
+    original = """
+        import zulu
+        from bravo import Bravo
+        import alpha
+
+        class Alpha(object):
+
+            def Method(self)
+                pass
+
+        def Function():
+            pass
+
+    """
+    assert CreateFile(filename, dedent(original), encoding='UTF-8')
+
+    app.TestScript(
+        dedent(
+            """
+                >>>terraformer fix-format --single-job --traceback-limit=0 %(data_dir)s
+                - %(filename)s: ERROR:
+                \b\b
+                On TerraForming.ReorganizeImports with filename: %(filename)s
+                Had problems parsing:
+                > import zulu
+                > from bravo import Bravo
+                > import alpha
+                >\b
+                > class Alpha(object):
+                >\b
+                >     def Method(self)
+                >         pass
+                >\b
+                > def Function():
+                >     pass
+
+
+                bad input: type=4, value=u'\\r\\n', context=('', (7, 20))
+                --- * ---
+            """ % locals()
+        ).replace('\b', ' '),
+        input_prefix='>>>'
+    )
+    assert GetFileContents(filename, encoding='UTF-8') == dedent(
+        """
+            import zulu
+            from bravo import Bravo
+            import alpha
+
+            class Alpha(object):
+
+                def Method(self)
+                    pass
+
+            def Function():
+                pass
+
+        """
+    )
+
+
 def testAddImportSymbol(embed_data):
     """
     General test for the "tf add-import-symbol" command.
